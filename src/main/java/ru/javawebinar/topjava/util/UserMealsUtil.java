@@ -52,7 +52,7 @@ public class UserMealsUtil {
                 .collect(Collectors.toList());
         Map<LocalDate, Integer> mapDateAndSumCalories =
                 meals.stream().collect(HashMap::new,
-                        (maps, c) -> maps.merge(c.getDateTime().toLocalDate(), c.getCalories(), Integer::sum),
+                        (maps, userMeal) -> maps.merge(userMeal.getDateTime().toLocalDate(), userMeal.getCalories(), Integer::sum),
                         (maps, u) -> {
                         });
         List<UserMealWithExcess> listResult;
