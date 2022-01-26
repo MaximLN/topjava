@@ -50,12 +50,12 @@ public class UserMealsUtil {
                 .collect(Collectors.toList());
         Map<LocalDate, Integer> mapDateAndSumCalories =
                 meals.stream().collect(HashMap::new,
-                        (maps, userMeal) -> maps.merge(userMeal.getDateTime().toLocalDate(), userMeal.getCalories(), Integer::sum),
-                        (maps, u) -> {
+                        (HashMap<LocalDate, Integer> maps, UserMeal c) -> maps.merge(c.getDateTime().toLocalDate(), c.getCalories(), Integer::sum),
+                        (HashMap<LocalDate, Integer> maps, HashMap<LocalDate, Integer> u) -> {
                         });
         List<UserMealWithExcess> listResult;
         listResult = listUserMealWithExcesses.stream()
-                .map(s -> new UserMealWithExcess(s.getDateTime(), s.getDescription(), s.getCalories(), mapDateAndSumCalories.get(s.getDateTime().toLocalDate()) > caloriesPerDay))
+                .map((UserMealWithExcess s) -> new UserMealWithExcess(s.getDateTime(), s.getDescription(), s.getCalories(), mapDateAndSumCalories.get(s.getDateTime().toLocalDate()) > caloriesPerDay))
                 .collect(Collectors.toList());
 
         return listResult;
