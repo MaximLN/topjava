@@ -1,8 +1,6 @@
 package ru.javawebinar.topjava.util;
-
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExcess;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -43,11 +41,9 @@ public class UserMealsUtil {
     }
 
     public static List<UserMealWithExcess> filteredByStreams(List<UserMeal> meals, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-        Map<LocalDate, Integer> mapDateAndSumCalories =
-                meals.stream().collect(HashMap::new,
-                        (HashMap<LocalDate, Integer> maps, UserMeal c) -> maps.merge(c.getDateTime().toLocalDate(), c.getCalories(), Integer::sum),
-                        (HashMap<LocalDate, Integer> maps, HashMap<LocalDate, Integer> u) -> {
-                        });
+        Map<LocalDate, Integer> mapDateAndSumCalories = meals.stream()
+                .collect(Collectors.groupingBy(UserMeal -> UserMeal.getDateTime().toLocalDate(),
+                        Collectors.summingInt(UserMeal::getCalories)));
         List<UserMealWithExcess> listResult;
         listResult = meals.stream()
                 .filter((UserMeal s) -> TimeUtil.isBetweenHalfOpen(s.getDateTime().toLocalTime(), startTime, endTime))
