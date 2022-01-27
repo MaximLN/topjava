@@ -27,16 +27,4 @@ public class UserMealWithExcess {
                 ", excess=" + excess +
                 '}';
     }
-
-    public int getCalories() {
-        return calories;
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public String getDescription() {
-        return description;
-    }
 }
