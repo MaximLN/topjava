@@ -1,27 +1,56 @@
-<%@ page import="ru.javawebinar.topjava.web.MealServlet" %>
-<%@ page import="ru.javawebinar.topjava.util.MealsUtil" %>
-<%@ page import="java.time.LocalTime" %>
-<%@ page import="ru.javawebinar.topjava.util.TempMealList" %>
-<%@ page import="java.util.List" %>
-<%@ page import="ru.javawebinar.topjava.model.MealTo" %>
-<%@ page contentType="text/html;charset=UTF-8" %>
-<html lang="ru">
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<html>
+
 <head>
-    <title>Meals</title>
+    <title>Users</title>
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
-<i><% List <MealTo> list = MealsUtil.filteredByStreams(TempMealList.getMeals(), LocalTime.of(7, 0), LocalTime.of(12, 0),TempMealList.getCaloriesPerDay());
-String color;
-for (MealTo meal : list) {
-    if (meal.toString().contains("excess=true")) {
-    color = "red";}
-    else color = "green";
-    %>
-        <%= "<font color=\""+color+"\">"+meal+"</font>" %>
-    <% } %>
-</i>
+<br>
+<a href="add">Add meal</a>
+<br>
+<table cellspacing="2" border="1" cellpadding="5">
+
+    <thead>
+    <tr>
+        <th>DateTime</th>
+        <th>Description</th>
+        <th>Calories</th>
+        <th>Update</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+
+    <c:forEach var="meal" items="${listMealTo}" varStatus="commentLoop">
+        <tr style="color:${meal.excess ? 'red' : 'green'}">
+            <td>
+                <fmt:parseDate value="${meal.dateTime}"
+                               type="both" var="parsedDatetime" pattern="yyyy-MM-dd'T'HH:mm"/>
+                <fmt:formatDate value="${parsedDatetime}" pattern="yyyy-MM-dd' 'HH:mm"/>
+            </td>
+            <td>
+                <c:out value="${meal.description}"/>
+            </td>
+            <td>
+                <c:out value="${meal.calories}"/>
+            </td>
+            <td>
+                <a href="update?id=<c:out value="${commentLoop.index}"/>">Update</a>
+            </td>
+            <td>
+                <a href="delete?id=<c:out value="${commentLoop.index}"/>">Delete</a>
+            </td>
+        </tr>
+    </c:forEach>
+    </tbody>
+
+</table>
 </body>
+
 </html>
