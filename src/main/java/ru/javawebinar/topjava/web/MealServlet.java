@@ -40,8 +40,7 @@ public class MealServlet extends HttpServlet {
 
     private void listMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to listMeal");
-        request.setAttribute("listMealTo", MealsUtil.filteredByStreams(SimulateDAO.getMeals(),
-                LocalTime.of(7, 0), LocalTime.of(12, 0), SimulateDAO.getCaloriesPerDay()));
+        request.setAttribute("listMealTo", MealsUtil.filteredByStreams(SimulateDAO.getMeals(), LocalTime.of(7, 0), LocalTime.of(12, 0), SimulateDAO.getCaloriesPerDay()));
         RequestDispatcher dispatcher = request.getRequestDispatcher("meals.jsp");
         dispatcher.forward(request, response);
     }
