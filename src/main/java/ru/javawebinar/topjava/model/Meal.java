@@ -36,4 +36,9 @@ public class Meal {
     public LocalTime getTime() {
         return dateTime.toLocalTime();
     }
+
+    public boolean equals(MealTo mealTo) {
+        return (this.getDateTime().toString().equals(mealTo.getDateTime().toString()))&&
+                (this.getCalories()==mealTo.getCalories())&&(this.description.equals(mealTo.getDescription()));
+    }
 }

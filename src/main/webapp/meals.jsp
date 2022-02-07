@@ -5,14 +5,14 @@
 <html>
 
 <head>
-    <title>Users</title>
+    <title>Meals</title>
 </head>
 <body>
 <h3><a href="index.html">Home</a></h3>
 <hr>
 <h2>Meals</h2>
 <br>
-<a href="add">Add meal</a>
+<a href="meals-add">Add meal</a>
 <br>
 <table cellspacing="2" border="1" cellpadding="5">
 
@@ -27,24 +27,25 @@
     </thead>
     <tbody>
 
-    <c:forEach var="meal" items="${listMealTo}" varStatus="commentLoop">
-        <tr style="color:${meal.excess ? 'red' : 'green'}">
+    <c:forEach var="entry" items="${toJspMealToMap}">
+        <tr style="color:${entry.value.excess ? 'red' : 'green'}">
             <td>
-                <fmt:parseDate value="${meal.dateTime}"
+                <fmt:parseDate value="${entry.value.dateTime}"
                                type="both" var="parsedDatetime" pattern="yyyy-MM-dd'T'HH:mm"/>
                 <fmt:formatDate value="${parsedDatetime}" pattern="yyyy-MM-dd' 'HH:mm"/>
             </td>
+
             <td>
-                <c:out value="${meal.description}"/>
+                <c:out value="${entry.value.description}"/>
             </td>
             <td>
-                <c:out value="${meal.calories}"/>
+                <c:out value="${entry.value.calories}"/>
             </td>
             <td>
-                <a href="update?id=<c:out value="${commentLoop.index}"/>">Update</a>
+                <a href="meals-upd?id=<c:out value="${entry.key}"/>">Update</a>
             </td>
             <td>
-                <a href="delete?id=<c:out value="${commentLoop.index}"/>">Delete</a>
+                <a href="meals-del?id=<c:out value="${entry.key}"/>">Delete</a>
             </td>
         </tr>
     </c:forEach>
