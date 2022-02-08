@@ -7,8 +7,10 @@ import java.time.Month;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class DAO {
+public class DaoImpl implements DaoInterface {
+
     static ConcurrentHashMap<Long, Meal> mealMap = new ConcurrentHashMap<>();
+
     static {
         mealMap.put(1L, new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
         mealMap.put(3L, new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
@@ -19,19 +21,24 @@ public class DAO {
         mealMap.put(8L, new Meal(LocalDateTime.of(2020, Month.JANUARY, 31, 20, 0), "Ужин", 410));
     }
 
-    public Map<Long,Meal> getMeals() {
+    @Override
+    public Map<Long, Meal> getMeals() {
         return mealMap;
     }
 
+    @Override
     public void deleteMeals(Long id) {
         mealMap.remove(id);
     }
 
+    @Override
     public void updateMeals(Long id, Meal meal) {
         mealMap.put(id, meal);
     }
 
-    public void addMeals(Long key, Meal meal) {
-        mealMap.put(key, meal);
+    @Override
+    public void addMeals(Long id, Meal meal) {
+        mealMap.put(id, meal);
     }
+
 }
