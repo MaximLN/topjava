@@ -29,7 +29,6 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
-        log.debug("request.getServletPath()" + request.getServletPath());
         String action = request.getServletPath();
         switch (action) {
             case "/meals-del":
@@ -47,53 +46,63 @@ public class MealServlet extends HttpServlet {
     }
 
     private void listMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        log.debug("redirect to listMeal");
         Map<Long, MealTo> toJspMealToMap = new Hashtable<>();
-
         List<MealTo> listMealTo = MealsUtil.filteredByStreams(new ArrayList<>(dao.getMeals().values()),
-                LocalTime.of(7, 0), LocalTime.of(12, 0), new User(2000).getCaloriesPerDay());
+                LocalTime.of(0, 0), LocalTime.of(23, 59), new User(2000).getCaloriesPerDay());
         for (Map.Entry<Long, Meal> entry : dao.getMeals().entrySet()) {
             for (MealTo mealTo : listMealTo) {
                 if (entry.getValue().equals(mealTo)) {
                     toJspMealToMap.put(entry.getKey(), mealTo);
-                    log.debug("toJspMealMap.put: " + entry.getKey());
+                    ;
                 }
             }
         }
-
+        log.debug("toJspMealMap size: " + toJspMealToMap.size());
         request.setAttribute("toJspMealToMap", toJspMealToMap);
         RequestDispatcher dispatcher = request.getRequestDispatcher("meals.jsp");
         dispatcher.forward(request, response);
     }
 
     private void deleteMeal(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        log.debug("redirect to deleteMeal");
         Long id = Long.parseLong(request.getParameter("id"));
         dao.deleteMeals(id);
+        log.debug("delete meal id = " + id);
         response.sendRedirect("meals");
     }
 
     private void updateMeal(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("meals-upd.jsp");
         Long id = Long.parseLong(request.getParameter("id"));
-        log.debug("redirect to updateMeal. Set: " + dao.getMeals().get(id).getDateTime());
+        log.debug("get update meal id: " + id);
         request.setAttribute("meal", dao.getMeals().get(id));
         dispatcher.forward(request, response);
-        dao.updateMeals(id, new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"), Integer.parseInt(request.getParameter("calories"))));
     }
 
     private void addMeal(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("meals-add.jsp");
         dispatcher.forward(request, response);
-        dao.addMeals(System.currentTimeMillis(), new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
-                request.getParameter("description"), Integer.parseInt(request.getParameter("calories"))));
-        log.debug("add new meal");
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        String action = request.getServletPath();
+        switch (action) {
+            case "/meals-upd":
+                Long id = Long.parseLong(request.getParameter("id"));
+                dao.updateMeals(id, new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
+                        request.getParameter("description"), Integer.parseInt(request.getParameter("calories"))));
+                log.debug("doPost update meal id: " + id);
+                break;
+            case "/meals-add":
+                dao.addMeals(System.currentTimeMillis(), new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
+                        request.getParameter("description"), Integer.parseInt(request.getParameter("calories"))));
+                log.debug("doPost add new meal");
+                break;
+        }
         doGet(request, response);
+        response.sendRedirect("meals");
     }
 }
+
 
 
