@@ -33,20 +33,20 @@ public class MealServlet extends HttpServlet {
         String action = request.getServletPath();
         switch (action) {
             case "/meals-del":
-                deleteMeal(request, response);
+                delete(request, response);
                 break;
             case "/meals-upd":
-                updateMeal(request, response);
+                update(request, response);
                 break;
             case "/meals-add":
-                addMeal(request, response);
+                add(request, response);
                 break;
             default:
-                listMeal(request, response);
+                show(request, response);
         }
     }
 
-    private void listMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void show(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         ConcurrentHashMap<Long, MealTo> toJspMealToMap = new ConcurrentHashMap<>();
         List<MealTo> listMealTo = MealsUtil.filteredByStreams(new ArrayList<>(daoInterface.getMeals().values()),
                 LocalTime.of(0, 0), LocalTime.of(23, 59), new User(2000).getCaloriesPerDay());
@@ -63,14 +63,14 @@ public class MealServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-    private void deleteMeal(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void delete(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Long id = Long.parseLong(request.getParameter("id"));
         daoInterface.deleteMeals(id);
         log.debug("delete meal id = " + id);
         response.sendRedirect("meals");
     }
 
-    private void updateMeal(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void update(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("meals-upd.jsp");
         Long id = Long.parseLong(request.getParameter("id"));
         log.debug("get update meal id: " + id);
@@ -78,7 +78,7 @@ public class MealServlet extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-    private void addMeal(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void add(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("meals-add.jsp");
         dispatcher.forward(request, response);
     }
