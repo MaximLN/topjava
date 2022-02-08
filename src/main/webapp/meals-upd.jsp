@@ -16,9 +16,9 @@
     <label>Calories:
         <input type="text" name="calories" value="${meal.calories}"><br/>
     </label>
-    <button type="submit" id="submitBtn">Submit </button>
+    <button type="submit" id="submitBtn">Save </button>
 </form>
 <a href="meals">
-<button id="CloseBtn">Close </button></a>
+<button id="CancelBtn">Cancel </button></a>
 </body>
 </html>

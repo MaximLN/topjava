@@ -16,9 +16,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -46,7 +46,7 @@ public class MealServlet extends HttpServlet {
     }
 
     private void listMeal(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        Map<Long, MealTo> toJspMealToMap = new Hashtable<>();
+        ConcurrentHashMap<Long, MealTo> toJspMealToMap = new ConcurrentHashMap<>();
         List<MealTo> listMealTo = MealsUtil.filteredByStreams(new ArrayList<>(dao.getMeals().values()),
                 LocalTime.of(0, 0), LocalTime.of(23, 59), new User(2000).getCaloriesPerDay());
         for (Map.Entry<Long, Meal> entry : dao.getMeals().entrySet()) {
@@ -99,7 +99,6 @@ public class MealServlet extends HttpServlet {
                 log.debug("doPost add new meal");
                 break;
         }
-        doGet(request, response);
         response.sendRedirect("meals");
     }
 }

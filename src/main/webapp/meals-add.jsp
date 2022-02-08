@@ -20,10 +20,10 @@
     <label>Calories:
         <input type="text" name="calories" value="0"><br/>
     </label>
-    <button type="submit" id="SubmitBtn">Submit</button>
+    <button type="submit" id="SubmitBtn">Save</button>
 </form>
 <a href="meals">
-    <button id="CloseBtn">Close</button>
+    <button id="CancelBtn">Cancel</button>
 </a>
 
 </body>

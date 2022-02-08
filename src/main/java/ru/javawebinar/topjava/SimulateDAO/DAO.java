@@ -5,9 +5,10 @@ import ru.javawebinar.topjava.model.Meal;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DAO {
-    static Map<Long, Meal> mealMap = new Hashtable<>();
+    static ConcurrentHashMap<Long, Meal> mealMap = new ConcurrentHashMap<>();
     static {
         mealMap.put(1L, new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 10, 0), "Завтрак", 500));
         mealMap.put(3L, new Meal(LocalDateTime.of(2020, Month.JANUARY, 30, 13, 0), "Обед", 1000));
