@@ -27,25 +27,25 @@
     </thead>
     <tbody>
 
-    <c:forEach var="entry" items="${toJspMealToMap}">
-        <tr style="color:${entry.value.excess ? 'red' : 'green'}">
+    <c:forEach var="mealTo" items="${toJspMealList}">
+        <tr style="color:${mealTo.excess ? 'red' : 'green'}">
             <td>
-                <fmt:parseDate value="${entry.value.dateTime}"
+                <fmt:parseDate value="${mealTo.dateTime}"
                                type="both" var="parsedDatetime" pattern="yyyy-MM-dd'T'HH:mm"/>
                 <fmt:formatDate value="${parsedDatetime}" pattern="yyyy-MM-dd' 'HH:mm"/>
             </td>
 
             <td>
-                <c:out value="${entry.value.description}"/>
+                <c:out value="${mealTo.description}"/>
             </td>
             <td>
-                <c:out value="${entry.value.calories}"/>
+                <c:out value="${mealTo.calories}"/>
             </td>
             <td>
-                <a href="meals-upd?id=<c:out value="${entry.key}"/>">Update</a>
+                <a href="meals-upd?id=<c:out value="${mealTo.id}"/>">Update</a>
             </td>
             <td>
-                <a href="meals-del?id=<c:out value="${entry.key}"/>">Delete</a>
+                <a href="meals-del?id=<c:out value="${mealTo.id}"/>">Delete</a>
             </td>
         </tr>
     </c:forEach>

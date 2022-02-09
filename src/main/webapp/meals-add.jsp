@@ -18,7 +18,7 @@
     </label>
 
     <label>Calories:
-        <input type="text" name="calories" value="0"><br/>
+        <input type="number" name="calories" value="0"><br/>
     </label>
     <button type="submit" id="SubmitBtn">Save</button>
 </form>
