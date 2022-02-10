@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository;
 
+import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.User;
 
 import java.util.Collection;
@@ -16,6 +17,7 @@ public interface UserRepository {
     User get(int id);
 
     List<User> getAll();
+//    Collection<User> getAll();
     //    Collection<User> getAll();
 
     // null if not found
