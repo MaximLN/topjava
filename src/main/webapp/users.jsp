@@ -18,15 +18,19 @@
         <th>Role</th>
         <th>Enabled</th>
         <th>Date registered</th>
+        <th>Update</th>
+        <th>Delete</th>
     </tr>
     </thead>
     <tbody>
-    <c:forEach var="varusers" items="${users}">
-    <td>${varusers.name}</td>
-    <td>${varusers.email}</td>
-    <td>${varusers.roles}</td>
-    <td>${varusers.enabled}</td>
-    <td>${varusers.registered}</td>
+    <c:forEach var="users" items="${users}">
+        <td>${users.name}</td>
+        <td>${users.email}</td>
+        <td>${users.roles}</td>
+        <td>${users.enabled}</td>
+        <td>${users.registered}</td>
+        <td><a href="users?action=update&id=${users.id}">Update</a></td>
+        <td><a href="users?action=delete&id=${users.id}">Delete</a></td>
     </c:forEach>
     </tbody>
 </table>
