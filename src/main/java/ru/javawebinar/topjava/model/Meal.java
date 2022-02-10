@@ -7,6 +7,8 @@ import java.time.LocalTime;
 public class Meal {
     private Integer id;
 
+    private Integer userId;
+
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -30,6 +32,10 @@ public class Meal {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public Integer getUserId() {
+        return userId;
     }
 
     public LocalDateTime getDateTime() {

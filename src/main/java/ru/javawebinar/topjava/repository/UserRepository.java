@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.repository;
 
 import ru.javawebinar.topjava.model.User;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface UserRepository {
@@ -14,8 +15,11 @@ public interface UserRepository {
     // null if not found
     User get(int id);
 
+    List<User> getAll();
+    //    Collection<User> getAll();
+
     // null if not found
     User getByEmail(String email);
 
-    List<User> getAll();
+
 }
