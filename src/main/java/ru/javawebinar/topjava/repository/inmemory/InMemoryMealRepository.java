@@ -6,13 +6,15 @@ import ru.javawebinar.topjava.util.MealsUtil;
 
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class InMemoryMealRepository implements MealRepository {
-    private static final Map<Integer, Meal> repository = new ConcurrentHashMap<Integer, Meal>();
+    private static final Map<Integer, Meal> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(0);
 
 //    {
@@ -45,8 +47,11 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        return repository.values();
+//    public Collection<Meal> getAll() {
+//        return repository.values();
+//    }
+    public List <Meal> getAll() {
+        return new ArrayList<>(repository.values());
     }
 }
 
