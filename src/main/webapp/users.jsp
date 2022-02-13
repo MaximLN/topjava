@@ -24,6 +24,7 @@
     </thead>
     <tbody>
     <c:forEach var="users" items="${users}">
+        <tr>
         <td>${users.name}</td>
         <td>${users.email}</td>
         <td>${users.roles}</td>
@@ -31,6 +32,7 @@
         <td>${users.registered}</td>
         <td><a href="users?action=update&id=${users.id}">Update</a></td>
         <td><a href="users?action=delete&id=${users.id}">Delete</a></td>
+            </tr>
     </c:forEach>
     </tbody>
 </table>

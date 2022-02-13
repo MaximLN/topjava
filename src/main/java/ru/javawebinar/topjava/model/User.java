@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.model;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Set;
@@ -92,10 +93,11 @@ public class User extends AbstractNamedEntity {
         return "User (" +
                 "id=" + id +
                 ", email=" + email +
-                ", name=" + name +
+                ", nam.e=" + name +
                 ", enabled=" + enabled +
                 ", roles=" + roles +
                 ", caloriesPerDay=" + caloriesPerDay +
                 ')';
     }
+    public static final Comparator<User> COMPARE_BY_NAME = Comparator.comparing(User::getName);
 }

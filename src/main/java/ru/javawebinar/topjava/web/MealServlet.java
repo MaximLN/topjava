@@ -5,16 +5,18 @@ import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
+import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.ValidationUtil;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
@@ -39,7 +41,7 @@ public class MealServlet extends HttpServlet {
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
 
-        log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
+        log.info(meal.isNew() ? "Servlet Create {}" : "Servlet Update {}", meal);
         repository.save(meal);
         response.sendRedirect("meals");
     }
@@ -56,6 +58,11 @@ public class MealServlet extends HttpServlet {
                 response.sendRedirect("meals");
                 break;
             case "create":
+//                add
+                request.setAttribute("meal", new Meal(null, null, LocalDateTime.of(LocalDateTime.now().getYear(),
+                        LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), LocalDateTime.now().getHour(),
+                        LocalDateTime.now().getMinute()), "Описание", 0));
+                request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
             case "update":
 //                final Meal meal = "create".equals(action) ?
 //                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :

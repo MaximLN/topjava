@@ -7,6 +7,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import java.util.List;
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 
 public abstract class AbstractMealController {
     protected final Logger log = LoggerFactory.getLogger(getClass());
@@ -26,7 +27,7 @@ public abstract class AbstractMealController {
 
     public Meal create(Meal meal) {
         log.info("create {}", meal);
-//        checkNew(meal);
+        checkNew(meal);
         return service.create(meal);
     }
 
