@@ -22,6 +22,43 @@
     <hr/>
     <h2>Meals</h2>
     <a href="meals?action=create">Add Meal</a>
+
+    <br><br>
+    <form method="post">
+        <table border="1" cellpadding="8" cellspacing="0">
+            <thead>
+            <tr>
+                <th>От даты (включая)</th>
+                <th>До даты (включая)</th>
+                <th>От времени (включая)</th>
+                <th>До времени (исключая)</th>
+            </tr>
+            </thead>
+            <tr>
+                <td><label>
+                    <input type="date" name="fromDate"/>
+                </label></td>
+                <td><label>
+                    <input type="date" name="beforeDate"/>
+                </label></td>
+                <td><label>
+                    <input type="time" name="fromTime"/>
+                </label></td>
+                <td><label>
+                    <input type="time" name="beforeTime"/>
+                </label></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Отменить</td>
+                <td>
+                    <button type="submit" id="submitBtn">Отфильтровать</button>
+                </td>
+            </tr>
+        </table>
+    </form>
+
     <br><br>
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>

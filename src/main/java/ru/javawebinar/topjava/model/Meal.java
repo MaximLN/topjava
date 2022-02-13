@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
 
 public class Meal extends AbstractBaseEntity{
 //public class Meal {
@@ -78,4 +79,5 @@ public class Meal extends AbstractBaseEntity{
                 ", calories=" + calories +
                 '}';
     }
+    public static final Comparator<Meal> COMPARE_BY_DATETIME = Comparator.comparing(Meal::getDateTime).reversed();
 }

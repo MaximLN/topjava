@@ -32,6 +32,9 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        System.out.println("doPost request.getParameter(id): " + request.getParameter("id"));
+        System.out.println("doPost request.getParameter(form): " + request.getParameter("form"));
+        if ("formFilter".equals(request.getParameter("form"))){
         String id = request.getParameter("id");
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
                 //add
@@ -42,7 +45,13 @@ public class MealServlet extends HttpServlet {
                 Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Servlet Create {}" : "Servlet Update {}", meal);
-        repository.save(meal);
+        repository.save(meal);}else {
+            System.out.println("doPost request.getParameter(fromDate): " + request.getParameter("fromDate"));
+            System.out.println("doPost request.getParameter(beforeDate): " + request.getParameter("beforeDate"));
+            System.out.println("doPost request.getParameter(fromDate): " + request.getParameter("fromTime"));
+            System.out.println("doPost request.getParameter(beforeDate): " + request.getParameter("beforeTime"));
+            System.out.println("Filtered now");
+        }
         response.sendRedirect("meals");
     }
 
@@ -74,7 +83,8 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 request.setAttribute("meals",
-                        MealsUtil.getTos(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+//                        MealsUtil.getTos(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
+                        MealsUtil.getTos(repository.getAll(), SecurityUtil.authUserCaloriesPerDay()));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

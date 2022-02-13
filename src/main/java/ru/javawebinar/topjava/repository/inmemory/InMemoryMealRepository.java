@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.repository.inmemory;
 
 import ru.javawebinar.topjava.SpringMain;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.web.SecurityUtil;
 import java.time.LocalDateTime;
@@ -47,9 +48,6 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-//    public Collection<Meal> getAll() {
-//        return repository.values();
-//    }
     public List<Meal> getAll() {
         List<Meal> meals = new ArrayList<>();
         for (Map.Entry<Integer, Meal> entry : repository.entrySet()) {
@@ -57,6 +55,7 @@ public class InMemoryMealRepository implements MealRepository {
                 meals.add(entry.getValue());
             }
         }
+        meals.sort(Meal.COMPARE_BY_DATETIME);
         return meals;
     }
 }
