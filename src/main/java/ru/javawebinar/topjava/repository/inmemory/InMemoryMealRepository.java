@@ -50,10 +50,14 @@ public class InMemoryMealRepository implements MealRepository {
     @Override
     public List<Meal> getAll() {
         List<Meal> meals = new ArrayList<>();
-        for (Map.Entry<Integer, Meal> entry : repository.entrySet()) {
-            if (entry.getValue().getUserId() == SecurityUtil.authUserId()) {
-                meals.add(entry.getValue());
+        if (SecurityUtil.authUserId() != 2) {
+            for (Map.Entry<Integer, Meal> entry : repository.entrySet()) {
+                if (entry.getValue().getUserId() == SecurityUtil.authUserId()) {
+                    meals.add(entry.getValue());
+                }
             }
+        } else {
+            meals = new ArrayList<>(repository.values());
         }
         meals.sort(Meal.COMPARE_BY_DATETIME);
         return meals;

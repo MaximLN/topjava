@@ -6,8 +6,6 @@ import java.time.LocalTime;
 import java.util.Comparator;
 
 public class Meal extends AbstractBaseEntity{
-//public class Meal {
-    private Integer id;
 
     private final Integer userId;
 
@@ -18,24 +16,16 @@ public class Meal extends AbstractBaseEntity{
     private final int calories;
 
     public Meal(LocalDateTime dateTime, String description, int calories) {
-        //custom
         this(null, null, dateTime, description, calories);
-        //
     }
 
     public Meal(Integer id,Integer userId, LocalDateTime dateTime, String description, int calories) {
-       //add
         super(id);
-        //
         this.id = id;
         this.userId = userId;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-    }
-
-    public Integer getId() {
-        return id;
     }
 
     public void setId(Integer id) {

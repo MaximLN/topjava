@@ -37,6 +37,10 @@ public class UserServlet extends HttpServlet {
                 response.sendRedirect("users");
                 break;
             case "create":
+            case "auth":
+                SecurityUtil.setUserId(Integer.parseInt(request.getParameter("user")));
+                response.sendRedirect("meals");
+                break;
             case "update":
                 final User user = "create".equals(action) ?
                         new User(null, request.getParameter("name"), request.getParameter("email"),
