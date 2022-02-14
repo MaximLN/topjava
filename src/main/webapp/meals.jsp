@@ -24,8 +24,8 @@
     <a href="meals?action=create">Add Meal</a>
 
     <br><br>
-    <form method="post">
-        <table border="1" cellpadding="8" cellspacing="0">
+    <form method="get" name="filterform">
+        <table border="0" cellpadding="8" cellspacing="0">
             <thead>
             <tr>
                 <th>От даты (включая)</th>
@@ -51,9 +51,13 @@
             <tr>
                 <td></td>
                 <td></td>
-                <td>Отменить</td>
+                <td></td>
                 <td>
-                    <button type="submit" id="submitBtn">Отфильтровать</button>
+                    <input type="button" value="Отфильтровать" onclick=
+                            "location.href='meals?action=filter&fromDate='+escape(document.forms['filterform'].elements['fromDate'].value)
++'&beforeDate='+escape(document.forms['filterform'].elements['beforeDate'].value)
++'&fromTime='+escape(document.forms['filterform'].elements['fromTime'].value)
++'&beforeTime='+escape(document.forms['filterform'].elements['beforeTime'].value)">
                 </td>
             </tr>
         </table>

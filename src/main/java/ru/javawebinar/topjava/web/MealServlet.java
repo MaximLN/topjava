@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
-import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -14,9 +13,9 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.Month;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Map;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
@@ -30,28 +29,18 @@ public class MealServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
         System.out.println("doPost request.getParameter(id): " + request.getParameter("id"));
-        System.out.println("doPost request.getParameter(form): " + request.getParameter("form"));
-        if ("formFilter".equals(request.getParameter("form"))){
         String id = request.getParameter("id");
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                //add
                 SecurityUtil.authUserId(),
-                //
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Servlet Create {}" : "Servlet Update {}", meal);
-        repository.save(meal);}else {
-            System.out.println("doPost request.getParameter(fromDate): " + request.getParameter("fromDate"));
-            System.out.println("doPost request.getParameter(beforeDate): " + request.getParameter("beforeDate"));
-            System.out.println("doPost request.getParameter(fromDate): " + request.getParameter("fromTime"));
-            System.out.println("doPost request.getParameter(beforeDate): " + request.getParameter("beforeTime"));
-            System.out.println("Filtered now");
-        }
+        repository.save(meal);
         response.sendRedirect("meals");
     }
 
@@ -67,24 +56,46 @@ public class MealServlet extends HttpServlet {
                 response.sendRedirect("meals");
                 break;
             case "create":
-//                add
                 request.setAttribute("meal", new Meal(null, null, LocalDateTime.of(LocalDateTime.now().getYear(),
                         LocalDateTime.now().getMonth(), LocalDateTime.now().getDayOfMonth(), LocalDateTime.now().getHour(),
                         LocalDateTime.now().getMinute()), "Описание", 0));
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
             case "update":
-//                final Meal meal = "create".equals(action) ?
-//                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-//                        repository.get(getId(request));
-//                request.setAttribute("meal", meal);
-//                request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                final Meal meal = "create".equals(action) ?
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
+                        repository.get(getId(request));
+                request.setAttribute("meal", meal);
+                request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                break;
+            case "filter":
+                log.info("doPost request.getParameter fromDate: " + request.getParameter("fromDate") + " beforeDate: " +
+                        request.getParameter("beforeDate") + " fromDate: " + request.getParameter("fromTime") + " beforeDate: " + request.getParameter("beforeTime"));
+
+                LocalDate ltFromDate = null, ldBeforeDate = null;
+                LocalTime ltFromTime, ltBeforeTime;
+
+                if (!request.getParameter("fromDate").isEmpty()) {
+                    ltFromDate = LocalDate.parse(request.getParameter("fromDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                }
+                if (!request.getParameter("beforeDate").isEmpty()) {
+                    ldBeforeDate = LocalDate.parse(request.getParameter("beforeDate"), DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                }
+                if (!request.getParameter("fromTime").isEmpty()) {
+                    ltFromTime = LocalTime.parse(request.getParameter("fromTime"), DateTimeFormatter.ofPattern("HH:mm"));
+                } else ltFromTime = LocalTime.MIN;
+
+                if (!request.getParameter("beforeTime").isEmpty()) {
+                    ltBeforeTime = LocalTime.parse(request.getParameter("beforeTime"), DateTimeFormatter.ofPattern("HH:mm"));
+                } else ltBeforeTime = LocalTime.MAX;
+
+                request.setAttribute("meals", MealsUtil.getFilteredTos(repository.getAllForSelectedDates(ltFromDate, ldBeforeDate),
+                        SecurityUtil.authUserCaloriesPerDay(), ltFromTime, ltBeforeTime));
+                request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
             case "all":
             default:
                 log.info("getAll");
-                request.setAttribute("meals",
-//                        MealsUtil.getTos(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
-                        MealsUtil.getTos(repository.getAll(), SecurityUtil.authUserCaloriesPerDay()));
+                request.setAttribute("meals", MealsUtil.getTos(repository.getAll(), SecurityUtil.authUserCaloriesPerDay()));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
