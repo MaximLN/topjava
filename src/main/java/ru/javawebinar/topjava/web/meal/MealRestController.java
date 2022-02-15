@@ -40,9 +40,10 @@ public class MealRestController {
 
     public Meal save(Meal meal) {
         log.info("create {}", meal);
-        if (meal.getId() == null){
-        return mealService.create(meal);}
-        else mealService.update(meal);
+        meal.setUserId(SecurityUtil.authUserId());
+        if (meal.getId() == null) {
+            return mealService.create(meal);
+        } else mealService.update(meal, authUserId());
         ////void???
         return meal;
     }
@@ -55,6 +56,9 @@ public class MealRestController {
 
     public List<MealTo> getAllForSelectedDates(LocalDate fromDate, LocalDate beforeDate, LocalTime ltFromTime, LocalTime ltBeforeTime) {
         log.info("getFilteredTos: " + fromDate + beforeDate);
-        return MealsUtil.getFilteredTos(repository.getAllForSelectedDates(authUserId(), fromDate, beforeDate), SecurityUtil.authUserCaloriesPerDay(), ltFromTime, ltBeforeTime);
+        List<MealTo> listMealTo = MealsUtil.getFilteredTos(mealService.getAllForSelectedDates(authUserId(),
+                fromDate, beforeDate), SecurityUtil.authUserCaloriesPerDay(), ltFromTime, ltBeforeTime);
+        listMealTo.sort(MealTo.COMPARE_BY_DATETIME);
+        return listMealTo;
     }
 }

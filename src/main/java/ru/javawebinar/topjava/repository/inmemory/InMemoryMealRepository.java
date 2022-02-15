@@ -3,9 +3,7 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.util.ValidationUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
-import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -30,44 +28,41 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public Meal save(Meal meal) {
+    public Meal create(Meal meal) {
         if (meal.isNew()) {
-            System.out.println("MealRepository add " + meal.getDateTime());
             meal.setId(counter.incrementAndGet());
             repository.put(meal.getId(), meal);
             return meal;
         }
+        else throw new NotFoundException("create fail");
         // handle case: update, but not present in storage
-        return repository.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+//        return repository.computeIfPresent(meal.getId(), (id1, oldMeal) -> meal);
+    }
+    @Override
+    public Meal update(Meal meal, int id, int userId) {
+        Meal mealOld = repository.get(id);
+        if (mealOld.getUserId() == userId) {
+            repository.computeIfPresent(id, (id1, oldMeal) -> meal);
+        }
+        return mealOld;
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        Meal meal;
-        try {
-            meal = repository.get(id);
-        } catch (NotFoundException notFoundException) {
-            return false;
-        }
+        Meal meal = repository.get(id);
         if (meal.getUserId() == userId) {
-            repository.remove(id);
-            return true;
+            return repository.remove(id) != null;
         } else
-            throw new NotFoundException("get meal delete NotFoundException");
+            throw new NotFoundException("delete fail. meal not given user");
     }
 
     @Override
     public Meal get(int id, int userId) {
-        Meal meal;
-        try {
-            meal = repository.get(id);
-        } catch (NotFoundException notFoundException) {
-            return null;
-        }
+        Meal meal = repository.get(id);
         if (meal.getUserId() == userId) {
             return meal;
         } else
-            throw new NotFoundException("get meal NotFoundException");
+            throw new NotFoundException("get fail. meal not given user");
     }
 
     @Override

@@ -8,7 +8,10 @@ import java.util.List;
 
 public interface MealRepository {
     // null if updated meal does not belong to userId
-    Meal save(Meal meal);
+    Meal create(Meal meal);
+//    Meal save(Meal meal, int id, int userId);
+
+    Meal update(Meal meal, int id, int userId);
 
     // false if meal does not belong to userId
     boolean delete(int id, int userId);
