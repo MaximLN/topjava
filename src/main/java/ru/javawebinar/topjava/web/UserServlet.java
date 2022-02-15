@@ -20,14 +20,11 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
-    ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
     UserRepository repository;
 
     @Override
     public void init() {
-        repository = appCtx.getBean(InMemoryUserRepository.class);
-        //Test call SpringMain.main
-        SpringMain.main(new String[0]);
+        repository = SpringMain.appCtx.getBean(InMemoryUserRepository.class);
     }
 
     @Override

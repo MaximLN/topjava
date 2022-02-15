@@ -8,16 +8,19 @@ import java.util.List;
 
 public interface MealRepository {
     // null if updated meal does not belong to userId
-    Meal save(Meal meal);
+    Meal create(Meal meal);
+//    Meal save(Meal meal, int id, int userId);
+
+    Meal update(Meal meal, int id, int userId);
 
     // false if meal does not belong to userId
-    boolean delete(int id);
+    boolean delete(int id, int userId);
 
     // null if meal does not belong to userId
-    Meal get(int id);
+    Meal get(int id, int userId);
 
     // ORDERED dateTime desc
-    Collection<Meal> getAll();
+    List <Meal> getAll(int userId);
 
-    List<Meal> getAllForSelectedDates (LocalDate fromDate, LocalDate beforeDate);
+    List<Meal> getAllForSelectedDates (int userId, LocalDate fromDate, LocalDate beforeDate);
 }

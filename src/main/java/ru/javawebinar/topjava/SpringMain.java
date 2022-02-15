@@ -6,18 +6,19 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
+
 import java.util.Arrays;
 
 public class SpringMain {
+    public static ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
+
     public static void main(String[] args) {
         // java 7 automatic resource management (ARM)
         System.out.println("SpringMain.main() run");
-        try (ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml")) {
-            System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
-            AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
-            adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
-            MealRestController mealRestController = appCtx.getBean(MealRestController.class);
-            System.out.println("mealRestController.get(1): " + mealRestController.get(1));
-        }
+        System.out.println("Bean definition names: " + Arrays.toString(appCtx.getBeanDefinitionNames()));
+        AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
+        adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ADMIN));
+        MealRestController mealRestController = appCtx.getBean(MealRestController.class);
+        System.out.println("SpringMain mealRestController.get(1): " + mealRestController.get(1));
     }
 }
