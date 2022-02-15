@@ -1,6 +1,9 @@
 package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import ru.javawebinar.topjava.SpringMain;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
@@ -17,11 +20,14 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 public class UserServlet extends HttpServlet {
     private static final Logger log = getLogger(UserServlet.class);
+    ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
     UserRepository repository;
 
     @Override
     public void init() {
-        repository = new InMemoryUserRepository();
+        repository = appCtx.getBean(InMemoryUserRepository.class);
+        //Test call SpringMain.main
+        SpringMain.main(new String[0]);
     }
 
     @Override

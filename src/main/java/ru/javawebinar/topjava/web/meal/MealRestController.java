@@ -1,13 +1,12 @@
 package ru.javawebinar.topjava.web.meal;
 
+import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.User;
-import ru.javawebinar.topjava.service.MealService;
 
 import java.util.List;
 
-public class MealRestController extends AbstractMealController{
-//    private MealService service;
+@Controller
+public class MealRestController extends AbstractMealController {
 
     @Override
     public List<Meal> getAll() {
