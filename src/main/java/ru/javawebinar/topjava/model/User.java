@@ -34,16 +34,6 @@ public class User extends AbstractNamedEntity {
         this.roles = roles;
     }
 
-    @Override
-    public String getName() {
-        return super.getName();
-    }
-
-    @Override
-    public Integer getId() {
-        return super.getId();
-    }
-
     public String getEmail() {
         return email;
     }
@@ -99,5 +89,6 @@ public class User extends AbstractNamedEntity {
                 ", caloriesPerDay=" + caloriesPerDay +
                 ')';
     }
+
     public static final Comparator<User> COMPARE_BY_NAME = Comparator.comparing(User::getName);
 }

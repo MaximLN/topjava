@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Comparator;
 
-public class Meal extends AbstractBaseEntity{
+public class Meal extends AbstractBaseEntity {
 
     private final Integer userId;
 
@@ -19,17 +19,13 @@ public class Meal extends AbstractBaseEntity{
         this(null, null, dateTime, description, calories);
     }
 
-    public Meal(Integer id,Integer userId, LocalDateTime dateTime, String description, int calories) {
+    public Meal(Integer id, Integer userId, LocalDateTime dateTime, String description, int calories) {
         super(id);
         this.id = id;
         this.userId = userId;
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
     }
 
     public Integer getUserId() {
@@ -69,5 +65,6 @@ public class Meal extends AbstractBaseEntity{
                 ", calories=" + calories +
                 '}';
     }
+
     public static final Comparator<Meal> COMPARE_BY_DATETIME = Comparator.comparing(Meal::getDateTime).reversed();
 }
