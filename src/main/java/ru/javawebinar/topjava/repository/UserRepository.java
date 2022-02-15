@@ -17,8 +17,6 @@ public interface UserRepository {
     User get(int id);
 
     List<User> getAll();
-//    Collection<User> getAll();
-    //    Collection<User> getAll();
 
     // null if not found
     User getByEmail(String email);
