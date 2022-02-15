@@ -66,5 +66,5 @@ public class Meal extends AbstractBaseEntity {
                 '}';
     }
 
-    public static final Comparator<Meal> COMPARE_BY_DATETIME = Comparator.comparing(Meal::getDateTime).reversed();
+//    public static final Comparator<Meal> COMPARE_BY_DATETIME = Comparator.comparing(Meal::getDateTime).reversed();
 }

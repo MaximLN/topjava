@@ -6,46 +6,55 @@ import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
+import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+
+import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
     private final MealRepository repository = new InMemoryMealRepository();
+    MealService mealService = new MealService(repository);
 
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     public List<MealTo> getAll() {
         log.info("getAll");
-        //в параметр + authUserId()
-        return MealsUtil.getTos(repository.getAll(), SecurityUtil.authUserCaloriesPerDay());
+        List<MealTo> listMealTo = MealsUtil.getTos(mealService.getAll(authUserId()), SecurityUtil.authUserCaloriesPerDay());
+        listMealTo.sort(MealTo.COMPARE_BY_DATETIME);
+        return listMealTo;
     }
 
 
     public Meal get(int id) {
         log.info("get {}", id);
-        return repository.get(id);
+        return mealService.get(id, authUserId());
     }
 
 
-    public Meal create(Meal meal) {
+    public Meal save(Meal meal) {
         log.info("create {}", meal);
-        return repository.save(meal);
+        if (meal.getId() == null){
+        return mealService.create(meal);}
+        else mealService.update(meal);
+        ////void???
+        return meal;
     }
 
 
     public void delete(int id) {
         log.info("delete {}", id);
-        repository.delete(id);
+        mealService.delete(id, authUserId());
     }
 
-
-//    public void update(Meal meal, int id) {
-//        log.info("update {} with id={}", meal, id);
-//        repository.save(meal, id);
-//    }
-
+    public List<MealTo> getAllForSelectedDates(LocalDate fromDate, LocalDate beforeDate, LocalTime ltFromTime, LocalTime ltBeforeTime) {
+        log.info("getFilteredTos: " + fromDate + beforeDate);
+        return MealsUtil.getFilteredTos(repository.getAllForSelectedDates(authUserId(), fromDate, beforeDate), SecurityUtil.authUserCaloriesPerDay(), ltFromTime, ltBeforeTime);
+    }
 }

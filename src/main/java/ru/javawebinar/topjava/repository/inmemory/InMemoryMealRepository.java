@@ -3,6 +3,8 @@ package ru.javawebinar.topjava.repository.inmemory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.ValidationUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.time.LocalDate;
@@ -40,35 +42,53 @@ public class InMemoryMealRepository implements MealRepository {
     }
 
     @Override
-    public boolean delete(int id) {
-        return repository.remove(id) != null;
+    public boolean delete(int id, int userId) {
+        Meal meal;
+        try {
+            meal = repository.get(id);
+        } catch (NotFoundException notFoundException) {
+            return false;
+        }
+        if (meal.getUserId() == userId) {
+            repository.remove(id);
+            return true;
+        } else
+            throw new NotFoundException("get meal delete NotFoundException");
     }
 
     @Override
-    public Meal get(int id) {
-        return repository.get(id);
+    public Meal get(int id, int userId) {
+        Meal meal;
+        try {
+            meal = repository.get(id);
+        } catch (NotFoundException notFoundException) {
+            return null;
+        }
+        if (meal.getUserId() == userId) {
+            return meal;
+        } else
+            throw new NotFoundException("get meal NotFoundException");
     }
 
     @Override
-    public List<Meal> getAll() {
+    public List<Meal> getAll(int userId) {
         List<Meal> meals = new ArrayList<>();
-        if (SecurityUtil.authUserId() != 2) {
+        if (userId != 2) {
             for (Map.Entry<Integer, Meal> entry : repository.entrySet()) {
-                if (entry.getValue().getUserId() == SecurityUtil.authUserId()) {
+                if (entry.getValue().getUserId() == userId) {
                     meals.add(entry.getValue());
                 }
             }
         } else {
             meals = new ArrayList<>(repository.values());
         }
-        meals.sort(Meal.COMPARE_BY_DATETIME);
         return meals;
     }
 
     @Override
-    public List<Meal> getAllForSelectedDates(LocalDate fromDate, LocalDate beforeDate) {
-        List<Meal> list = new ArrayList<>(getAll());
-        List<Meal> listFiltered = new ArrayList<>(getAll());
+    public List<Meal> getAllForSelectedDates(int userId, LocalDate fromDate, LocalDate beforeDate) {
+        List<Meal> list = new ArrayList<>(getAll(userId));
+        List<Meal> listFiltered = new ArrayList<>(getAll(userId));
         for (Meal mealInList : list) {
             if (fromDate != null) {
                 if (mealInList.getDate().isBefore(fromDate)) {
