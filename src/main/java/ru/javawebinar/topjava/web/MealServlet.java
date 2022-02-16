@@ -2,8 +2,6 @@ package ru.javawebinar.topjava.web;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.SpringMain;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.meal.MealRestController;
@@ -22,7 +20,7 @@ import java.util.Objects;
 public class MealServlet extends HttpServlet {
 
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-    MealRestController mealRestController;
+    private MealRestController mealRestController;
 
     @Override
     public void init() {
@@ -36,7 +34,9 @@ public class MealServlet extends HttpServlet {
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id), null, LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"), Integer.parseInt(request.getParameter("calories")));
         log.info(meal.isNew() ? "Servlet Create {}" : "Servlet Update {}", meal);
-        mealRestController.save(meal);
+        if (meal.isNew()) {
+            mealRestController.create(meal);
+        } else mealRestController.update(meal, meal.getId());
         response.sendRedirect("meals");
     }
 
@@ -53,10 +53,9 @@ public class MealServlet extends HttpServlet {
             case "create":
                 request.setAttribute("meal", new Meal(null, null, LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "Описание", 0));
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
+                break;
             case "update":
-                final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                        mealRestController.get(getId(request));
+                final Meal meal = mealRestController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
                 break;

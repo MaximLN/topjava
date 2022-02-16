@@ -54,22 +54,18 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public List<User> getAll() {
         log.info("getAll");
-        List<User> list = new ArrayList<>(repository.values());
-        Stream<User> userStream = list.stream().sorted(User.COMPARE_BY_NAME.thenComparing(User::getEmail));
+        Comparator<User> COMPARE_BY_NAME = Comparator.comparing(User::getName);
+        Stream<User> userStream = new ArrayList<>(repository.values()).stream().sorted(COMPARE_BY_NAME.thenComparing(User::getEmail));
         return userStream.collect(Collectors.toList());
     }
 
     @Override
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
-        try {
-            return repository.entrySet().stream()
-                    .filter(entry -> entry.getValue().getEmail().equalsIgnoreCase(email))
-                    .findFirst()
-                    .get().getValue();
-        } catch (NoSuchElementException noSuchElementException) {
-            throw new NoSuchElementException("Not Found email: " + email);
-        }
+        return Objects.requireNonNull(repository.entrySet().stream()
+                .filter(entry -> entry.getValue().getEmail().equalsIgnoreCase(email))
+                .findFirst()
+                .orElse(null)).getValue();
     }
 }
 

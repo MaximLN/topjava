@@ -7,8 +7,6 @@ import java.util.Comparator;
 
 public class MealTo {
 
-    public static final Comparator<MealTo> COMPARE_BY_DATETIME = Comparator.comparing(MealTo::getDateTime).reversed();
-
     private final Integer id;
 
     private final LocalDateTime dateTime;

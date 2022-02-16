@@ -13,13 +13,13 @@ import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 public class MealService {
 
     private final MealRepository repository;
-@Autowired
+
     public MealService(MealRepository repository) {
         this.repository = repository;
     }
 
     public Meal create(Meal meal) {
-        return repository.create(meal);
+        return repository.save(meal, meal.getUserId());
     }
 
     public void delete(int id, int userId) {
@@ -35,7 +35,7 @@ public class MealService {
     }
 
     public void update(Meal meal, int userId) {
-        checkNotFoundWithId(repository.update(meal, meal.getId(), userId), meal.getId());
+        checkNotFoundWithId(repository.save(meal, userId), meal.getId());
     }
 
     public List<Meal> getAllForSelectedDates(int userId, LocalDate fromDate, LocalDate beforeDate) {

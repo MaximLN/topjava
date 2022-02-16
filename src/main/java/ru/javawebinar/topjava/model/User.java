@@ -9,8 +9,6 @@ import static ru.javawebinar.topjava.util.MealsUtil.DEFAULT_CALORIES_PER_DAY;
 
 public class User extends AbstractNamedEntity {
 
-    public static final Comparator<User> COMPARE_BY_NAME = Comparator.comparing(User::getName);
-
     private String email;
 
     private String password;

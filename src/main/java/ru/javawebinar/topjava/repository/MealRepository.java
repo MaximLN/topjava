@@ -3,15 +3,12 @@ package ru.javawebinar.topjava.repository;
 import ru.javawebinar.topjava.model.Meal;
 
 import java.time.LocalDate;
-import java.util.Collection;
 import java.util.List;
 
 public interface MealRepository {
     // null if updated meal does not belong to userId
-    Meal create(Meal meal);
-//    Meal save(Meal meal, int id, int userId);
 
-    Meal update(Meal meal, int id, int userId);
+    Meal save(Meal meal, int id);
 
     // false if meal does not belong to userId
     boolean delete(int id, int userId);
@@ -20,7 +17,7 @@ public interface MealRepository {
     Meal get(int id, int userId);
 
     // ORDERED dateTime desc
-    List <Meal> getAll(int userId);
+    List<Meal> getAll(int userId);
 
-    List<Meal> getAllForSelectedDates (int userId, LocalDate fromDate, LocalDate beforeDate);
+    List<Meal> getAllForSelectedDates(int userId, LocalDate fromDate, LocalDate beforeDate);
 }
