@@ -2,9 +2,7 @@ package ru.javawebinar.topjava.web.meal;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Controller;
-import ru.javawebinar.topjava.SpringMain;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.repository.inmemory.InMemoryMealRepository;
@@ -17,14 +15,14 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Controller
 public class MealRestController {
 
     private final MealRepository repository = new InMemoryMealRepository();
-    MealService mealService = new MealService(repository);
-
+    private final MealService mealService = new MealService(repository);
     protected final Logger log = LoggerFactory.getLogger(getClass());
 
     public List<MealTo> getAll() {
@@ -34,23 +32,25 @@ public class MealRestController {
         return listMealTo;
     }
 
-
     public Meal get(int id) {
         log.info("get {}", id);
         return mealService.get(id, authUserId());
     }
 
-
     public Meal save(Meal meal) {
-        log.info("create {}", meal);
-        meal.setUserId(SecurityUtil.authUserId());
         if (meal.getId() == null) {
+            log.info("create {}", meal);
+            checkNew(meal);
+            meal.setUserId(SecurityUtil.authUserId());
             return mealService.create(meal);
-        } else mealService.update(meal, authUserId());
-        ////void???
+        } else {
+            log.info("update {} with id={}", meal, meal.getId());
+            mealService.get(meal.getId(), authUserId());
+            meal.setUserId(SecurityUtil.authUserId());
+            mealService.update(meal, authUserId());
+        }
         return meal;
     }
-
 
     public void delete(int id) {
         log.info("delete {}", id);

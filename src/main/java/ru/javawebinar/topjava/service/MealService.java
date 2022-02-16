@@ -1,22 +1,19 @@
 package ru.javawebinar.topjava.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
-import ru.javawebinar.topjava.to.MealTo;
-
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserId;
 
 @Service
 public class MealService {
 
     private final MealRepository repository;
-
+@Autowired
     public MealService(MealRepository repository) {
         this.repository = repository;
     }
