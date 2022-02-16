@@ -34,7 +34,7 @@ public class MealService {
     }
 
     public List<Meal> getAll(int userId) {
-        return (List<Meal>) repository.getAll(userId);
+        return repository.getAll(userId);
     }
 
     public void update(Meal meal, int userId) {

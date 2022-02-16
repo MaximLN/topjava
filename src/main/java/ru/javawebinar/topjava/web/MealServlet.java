@@ -19,19 +19,20 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 public class MealServlet extends HttpServlet {
+
     private static final Logger log = LoggerFactory.getLogger(MealServlet.class);
-//    ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
-//    private MealRepository repository;
+    ConfigurableApplicationContext appCtx = new ClassPathXmlApplicationContext("spring/spring-app.xml");
     MealRestController mealRestController =  new MealRestController();
 
     @Override
     public void init() {
-//        repository = appCtx.getBean(InMemoryMealRepository.class);
+        mealRestController = appCtx.getBean(MealRestController.class);
     }
 
     @Override

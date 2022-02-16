@@ -43,12 +43,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User get(int id) {
         log.info("get {}", id);
-        for (Map.Entry<Integer, User> entry : repository.entrySet()) {
-            if (entry.getValue().getId() == id) {
-                return entry.getValue();
-            }
-        }
-        return null;
+        return repository.get(id);
     }
 
     @Override
@@ -63,7 +58,7 @@ public class InMemoryUserRepository implements UserRepository {
     public User getByEmail(String email) {
         log.info("getByEmail {}", email);
         for (Map.Entry<Integer, User> entry : repository.entrySet()) {
-            if (entry.getValue().getEmail().equals(email)) {
+            if (entry.getValue().getEmail().equalsIgnoreCase(email)) {
                 return entry.getValue();
             }
         }

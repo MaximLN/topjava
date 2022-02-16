@@ -17,15 +17,15 @@ public class InMemoryMealRepository implements MealRepository {
     private static final Map<Integer, Meal> repository = new ConcurrentHashMap<>();
     private final AtomicInteger counter = new AtomicInteger(10);
 
-    static {
-        repository.put(1, new Meal(1, 1, LocalDateTime.of(2022, Month.FEBRUARY, 1, 10, 0), "Завтрак", 500));
-        repository.put(2, new Meal(2, 1, LocalDateTime.of(2022, Month.FEBRUARY, 2, 12, 57), "Обед", 1500));
-        repository.put(3, new Meal(3, 2, LocalDateTime.of(2022, Month.FEBRUARY, 3, 2, 2), "Ужин", 1000));
-        repository.put(4, new Meal(4, 1, LocalDateTime.of(2022, Month.FEBRUARY, 4, 21, 3), "Ужин", 1000));
-        repository.put(5, new Meal(5, 1, LocalDateTime.of(2022, Month.FEBRUARY, 5, 8, 10), "Ужин", 1000));
-        repository.put(6, new Meal(6, 1, LocalDateTime.of(2022, Month.FEBRUARY, 6, 7, 55), "Ужин", 1000));
-        repository.put(7, new Meal(7, 2, LocalDateTime.of(2022, Month.FEBRUARY, 7, 10, 1), "Ужин", 1000));
-    }
+//    static {
+//        repository.put(1, new Meal(1, 1, LocalDateTime.of(2022, Month.FEBRUARY, 1, 10, 0), "Завтрак", 500));
+//        repository.put(2, new Meal(2, 1, LocalDateTime.of(2022, Month.FEBRUARY, 2, 12, 57), "Обед", 1500));
+//        repository.put(3, new Meal(3, 2, LocalDateTime.of(2022, Month.FEBRUARY, 3, 2, 2), "Ужин", 1000));
+//        repository.put(4, new Meal(4, 1, LocalDateTime.of(2022, Month.FEBRUARY, 4, 21, 3), "Ужин", 1000));
+//        repository.put(5, new Meal(5, 1, LocalDateTime.of(2022, Month.FEBRUARY, 5, 8, 10), "Ужин", 1000));
+//        repository.put(6, new Meal(6, 1, LocalDateTime.of(2022, Month.FEBRUARY, 6, 7, 55), "Ужин", 1000));
+//        repository.put(7, new Meal(7, 2, LocalDateTime.of(2022, Month.FEBRUARY, 7, 10, 1), "Ужин", 1000));
+//    }
 
     @Override
     public Meal create(Meal meal) {

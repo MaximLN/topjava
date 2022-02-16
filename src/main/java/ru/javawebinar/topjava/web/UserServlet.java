@@ -27,7 +27,7 @@ public class UserServlet extends HttpServlet {
     public void init() {
         repository = appCtx.getBean(InMemoryUserRepository.class);
         //Test call SpringMain.main
-        SpringMain.main(new String[0]);
+//        SpringMain.main(new String[0]);
     }
 
     @Override
