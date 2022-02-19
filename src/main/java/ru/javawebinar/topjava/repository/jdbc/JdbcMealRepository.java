@@ -10,6 +10,7 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.model.MealRowMapper;
 import ru.javawebinar.topjava.repository.MealRepository;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -59,6 +60,10 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return null;
+        return jdbcTemplate.query("SELECT * FROM meals WHERE datetime >= '" + Timestamp.valueOf(startDateTime) +
+                "' AND datetime <= '" + Timestamp.valueOf(endDateTime) +
+                "' AND userId = '" + userId +
+                "' ORDER BY datetime DESC", new MealRowMapper());
+
     }
 }
