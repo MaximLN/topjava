@@ -1,6 +1,7 @@
-package ru.javawebinar.topjava.model;
+package ru.javawebinar.topjava.util;
 
 import org.springframework.jdbc.core.RowMapper;
+import ru.javawebinar.topjava.model.Meal;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
