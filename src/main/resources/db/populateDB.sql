@@ -5,6 +5,7 @@ FROM users;
 DELETE
 FROM meals;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
+ALTER SEQUENCE mealsid_seq RESTART WITH 100000;
 
 INSERT INTO users (name, email, password)
 VALUES ('User', 'user@yandex.ru', 'password'),
