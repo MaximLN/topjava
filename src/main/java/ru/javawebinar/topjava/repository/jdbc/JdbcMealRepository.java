@@ -1,7 +1,9 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.support.DataAccessUtils;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -20,11 +22,11 @@ public class JdbcMealRepository implements MealRepository {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
-    private final SimpleJdbcInsert insertUser;
+    private final SimpleJdbcInsert insertMeal;
 
     @Autowired
     public JdbcMealRepository(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
-        this.insertUser = new SimpleJdbcInsert(jdbcTemplate)
+        this.insertMeal = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("meals")
                 .usingGeneratedKeyColumns("id");
 
@@ -35,46 +37,45 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if (meal.getId() == null) {
-            return jdbcTemplate.update("INSERT INTO meals (userid, dateTime, description, calories) " +
-                    "VALUES ( " + userId + " , '" + Timestamp.valueOf(meal.getDateTime()) +
-                    "' , '" + meal.getDescription() + "' , " + meal.getCalories() + " ) ") == 1 ? meal : null;
-        } else {
-            return jdbcTemplate.update("UPDATE meals SET" +
-                    " id = " + meal.getId() +
-                    ", userid = " + userId +
-                    ", dateTime = '" + Timestamp.valueOf(meal.getDateTime()) +
-                    "', description = '" + meal.getDescription() +
-                    "', calories = " + meal.getCalories() +
-                    " WHERE id = " + meal.getId() + " AND userid = " + userId) == 1 ? meal : null;
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("id", meal.getId())
+                .addValue("userid", userId)
+                .addValue("datetime", meal.getDateTime())
+                .addValue("description", meal.getDescription())
+                .addValue("calories", meal.getCalories());
+
+        if (meal.isNew()) {
+            Number newKey = insertMeal.executeAndReturnKey(map);
+            meal.setId(newKey.intValue());
+        } else if (namedParameterJdbcTemplate.update(
+                "UPDATE meals SET datetime=:datetime, description=:description, calories=:calories WHERE id=:id", map) == 0) {
+            return null;
         }
+        return meal;
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        return jdbcTemplate.update("DELETE FROM meals WHERE id = " + id + " AND userid = " + userId) == 1;
+        String update = "DELETE FROM meals WHERE id = ? AND userid = ?";
+        return jdbcTemplate.update(update, id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        System.out.println(id + " " + userId);
-        List<Meal> list = jdbcTemplate.query("SELECT * FROM meals WHERE id = " + id +
-                " AND userid = " + userId, new MealRowMapper());
-        return (list.size() == 1) ? list.get(0) : null;
+        String select = "SELECT * FROM meals WHERE id = ? AND userid = ?";
+        List<Meal> meals = jdbcTemplate.query(select, new MealRowMapper(), id, userId);
+        return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE userid = " + userId +
-                " ORDER BY datetime DESC", new MealRowMapper());
+        String select = "SELECT * FROM meals WHERE userid = ? ORDER BY datetime DESC";
+        return jdbcTemplate.query(select, new MealRowMapper(), userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        return jdbcTemplate.query("SELECT * FROM meals WHERE datetime >= '" + Timestamp.valueOf(startDateTime) +
-                "' AND datetime <= '" + Timestamp.valueOf(endDateTime) +
-                "' AND userId = '" + userId +
-                "' ORDER BY datetime DESC", new MealRowMapper());
-
+        String select = "SELECT * FROM meals WHERE datetime >= ? AND datetime <= ? AND userId = ? ORDER BY datetime DESC";
+        return jdbcTemplate.query(select, new MealRowMapper(), Timestamp.valueOf(startDateTime), Timestamp.valueOf(endDateTime), userId);
     }
 }
