@@ -9,12 +9,12 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
-import ru.javawebinar.topjava.UserTestData;
+import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.Role;
-import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
@@ -44,15 +44,15 @@ public class MealServiceTest {
         Meal created = service.create(getNew(), ADMIN_ID);
         Integer newId = created.getId();
         Meal newMeal = getNew();
-        newMeal.setId(newId);
         assertMatch(created, newMeal);
         assertMatch(service.get(newId, ADMIN_ID), newMeal);
     }
 
     @Test
     public void duplicateDateTimeCreate() {
+        service.create(mealByDublicate, ADMIN_ID);
         assertThrows(DataAccessException.class, () ->
-                service.create(new Meal(LocalDateTime.of(2015, Month.JUNE, 1, 21, 0), "Админ ужин duplicate", 350), ADMIN_ID));
+                service.create(new Meal(LocalDateTime.of(2022, Month.FEBRUARY, 5, 5, 5), "After duplicate", 350), ADMIN_ID));
     }
 
     @Test
@@ -62,39 +62,49 @@ public class MealServiceTest {
         service.delete(newId, ADMIN_ID);
         assertThrows(NotFoundException.class, () -> service.get(newId, ADMIN_ID));
     }
-//
-//    @Test
-//    public void deletedNotFound() {
-//        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND));
-//    }
-//
-//    @Test
-//    public void get() {
-//        User user = service.get(USER_ID);
-//        assertMatch(user, UserTestData.user);
-//    }
-//
-//    @Test
-//    public void getNotFound() {
-//        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND));
-//    }
-//
-//    @Test
-//    public void getByEmail() {
-//        User user = service.getByEmail("admin@gmail.com");
-//        assertMatch(user, admin);
-//    }
-//
-//    @Test
-//    public void update() {
-//        User updated = getUpdated();
-//        service.update(updated);
-//        assertMatch(service.get(USER_ID), getUpdated());
-//    }
-//
-//    @Test
-//    public void getAll() {
-//        List<User> all = service.getAll();
-//        assertMatch(all, admin, guest, user);
-//    }
+
+    @Test
+    public void deletedNotFound() {
+        assertThrows(NotFoundException.class, () -> service.delete(NOT_FOUND, NOT_FOUND));
+    }
+
+    @Test
+    public void get() {
+//        Create new meal of static meal
+        Meal created = service.create(getNew(), ADMIN_ID);
+        Integer newId = created.getId();
+        Meal meal = service.get(newId, ADMIN_ID);
+        assertMatch(meal, MealTestData.meal);
+    }
+
+    @Test
+    public void getNotFound() {
+        assertThrows(NotFoundException.class, () -> service.get(NOT_FOUND, NOT_FOUND));
+    }
+
+    @Test
+    public void update() {
+//        Create new meal of static meal
+        Meal created = service.create(getNew(), ADMIN_ID);
+        Integer newId = created.getId();
+//        Custom meal
+        Meal updated = getUpdated();
+        updated.setId(newId);
+        service.update(updated, ADMIN_ID);
+        assertMatch(service.get(newId, ADMIN_ID), getUpdated());
+    }
+
+    @Test
+    public void getAll() {
+        service.create(meal, ADMIN_ID);
+        List<Meal> all = service.getAll(ADMIN_ID);
+        assertMatch(all, meal);
+    }
+
+    @Test
+    public void getBetweenHalfOpen() {
+        List<Meal> all = service.getBetweenInclusive(LocalDate.of(2015, Month.JUNE, 1), LocalDate.of(2022, Month.FEBRUARY, 25), ADMIN_ID);
+        assertMatch(all);
+    }
+
 }
