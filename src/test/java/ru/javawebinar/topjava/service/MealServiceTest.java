@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
@@ -103,8 +104,8 @@ public class MealServiceTest {
 
     @Test
     public void getBetweenHalfOpen() {
-        List<Meal> all = service.getBetweenInclusive(LocalDate.of(2015, Month.JUNE, 1), LocalDate.of(2022, Month.FEBRUARY, 25), ADMIN_ID);
-        assertMatch(all);
+        List<Meal> all = service.getBetweenInclusive(LocalDate.of(2022, Month.FEBRUARY, 20), LocalDate.of(2022, Month.FEBRUARY, 25), ADMIN_ID);
+        assertMatch(all, meal);
     }
 
 }
