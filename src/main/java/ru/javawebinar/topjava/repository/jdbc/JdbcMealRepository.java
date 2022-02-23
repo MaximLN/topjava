@@ -40,8 +40,8 @@ public class JdbcMealRepository implements MealRepository {
     public Meal save(Meal meal, int userId) {
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
-                .addValue("userid", userId)
-                .addValue("datetime", meal.getDateTime())
+                .addValue("user_id", userId)
+                .addValue("date_time", meal.getDateTime())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories());
 
@@ -49,7 +49,7 @@ public class JdbcMealRepository implements MealRepository {
             Number newKey = insertMeal.executeAndReturnKey(map);
             meal.setId(newKey.intValue());
         } else if (namedParameterJdbcTemplate.update(
-                "UPDATE meals SET datetime=:datetime, description=:description, calories=:calories WHERE id=:id", map) == 0) {
+                "UPDATE meals SET date_time=:date_time, description=:description, calories=:calories WHERE id=:id", map) == 0) {
             return null;
         }
         return meal;
@@ -57,26 +57,26 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        String update = "DELETE FROM meals WHERE id = ? AND userid = ?";
+        String update = "DELETE FROM meals WHERE id = ? AND user_id = ?";
         return jdbcTemplate.update(update, id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        String select = "SELECT * FROM meals WHERE id = ? AND userid = ?";
+        String select = "SELECT * FROM meals WHERE id = ? AND user_id = ?";
         List<Meal> meals = jdbcTemplate.query(select, ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(meals);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        String select = "SELECT * FROM meals WHERE userid = ? ORDER BY datetime DESC";
+        String select = "SELECT * FROM meals WHERE user_id = ? ORDER BY date_time DESC";
         return jdbcTemplate.query(select, ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
-        String select = "SELECT * FROM meals WHERE datetime >= ? AND datetime < ? AND userId = ? ORDER BY datetime DESC";
+        String select = "SELECT * FROM meals WHERE date_time >= ? AND date_time < ? AND user_Id = ? ORDER BY date_time DESC";
         return jdbcTemplate.query(select, ROW_MAPPER, Timestamp.valueOf(startDateTime), Timestamp.valueOf(endDateTime), userId);
     }
 }

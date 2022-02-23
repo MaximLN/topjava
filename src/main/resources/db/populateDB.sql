@@ -15,7 +15,7 @@ INSERT INTO user_roles (role, user_id)
 VALUES ('USER', 100000),
        ('ADMIN', 100001);
 
-INSERT INTO meals (userid, datetime, description, calories)
+INSERT INTO meals (user_id, date_time, description, calories)
 VALUES (100000, '2022-02-21 14:00:00 +02:00', 'descriptionuser1', 100),
        (100000, '2022-02-21 12:00:00 +02:00', 'descriptionuser2', 1000),
        (100000, '2022-02-20 11:00:00 +02:00', 'descriptionuser3', 2000),
