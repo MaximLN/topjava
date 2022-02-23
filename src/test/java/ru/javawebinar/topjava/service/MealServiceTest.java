@@ -13,11 +13,9 @@ import ru.javawebinar.topjava.MealTestData;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertThrows;
@@ -97,15 +95,14 @@ public class MealServiceTest {
 
     @Test
     public void getAll() {
-        service.create(meal, ADMIN_ID);
         List<Meal> all = service.getAll(ADMIN_ID);
-        assertMatch(all, meal);
+        assertMatch(all, checkAdminList);
     }
 
     @Test
     public void getBetweenHalfOpen() {
-        List<Meal> all = service.getBetweenInclusive(LocalDate.of(2022, Month.FEBRUARY, 20), LocalDate.of(2022, Month.FEBRUARY, 25), ADMIN_ID);
-        assertMatch(all, meal);
+        List<Meal> all = service.getBetweenInclusive(LocalDate.of(2022, Month.FEBRUARY, 20), LocalDate.of(2022, Month.FEBRUARY, 21), USER_ID);
+        assertMatch(all, checkUserFilteredList);
     }
 
 }
