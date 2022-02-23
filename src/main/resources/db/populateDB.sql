@@ -19,7 +19,7 @@ INSERT INTO meals (userid, datetime, description, calories)
 VALUES (100000, '2022-02-21 14:00:00 +02:00', 'descriptionuser1', 100),
        (100000, '2022-02-21 12:00:00 +02:00', 'descriptionuser2', 1000),
        (100000, '2022-02-20 11:00:00 +02:00', 'descriptionuser3', 2000),
-       (100000, '2022-02-18 9:00:00 +02:00', 'descriptionuser4', 100),
+       (100000, '2022-02-18 00:00:00 +02:00', 'descriptionuser4', 100),
        (100000, '2022-02-17 22:00:00 +02:00', 'descriptionuser5', 1200),
        (100000, '2022-02-21 21:00:00 +02:00', 'descriptionuser6', 200),
        (100000, '2022-02-21 23:00:00 +02:00', 'descriptionuser7', 1500),
