@@ -95,7 +95,6 @@ public class MealServiceTest {
     public void updateAlien() {
         Meal updated = getUpdated();
         updated.setId(ID15);
-        System.out.println("______________________________________________________"+updated);
         System.out.println(service.get(ID15,UserTestData.ADMIN_ID));
         assertThrows(NotFoundException.class, () -> service.update(updated, UserTestData.USER_ID));
     }
