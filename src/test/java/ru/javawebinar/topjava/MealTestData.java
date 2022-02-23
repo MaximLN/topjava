@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static ru.javawebinar.topjava.model.AbstractBaseEntity.START_SEQ;
@@ -51,6 +52,7 @@ public class MealTestData {
     }
 
     public static void assertMatch(Meal actual, Meal expected) {
+        assertThat(actual.getId()).isEqualTo(expected.getId());
         assertThat(actual.getDescription()).isEqualTo(expected.getDescription());
         assertThat(actual.getCalories()).isEqualTo(expected.getCalories());
         assertThat(actual.getDateTime()).isEqualTo(expected.getDateTime());
