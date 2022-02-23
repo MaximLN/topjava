@@ -25,10 +25,9 @@ public class Meal extends AbstractBaseEntity {
         this.description = description;
         this.calories = calories;
     }
-//For JUnit
-    public Meal(Meal meal) {
-            this(meal.id, meal.dateTime, meal.description, meal.calories);
 
+    public Meal(Meal meal) {
+        this(meal.id, meal.dateTime, meal.description, meal.calories);
     }
 
     public void setCalories(int calories) {
