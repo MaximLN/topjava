@@ -1,14 +1,21 @@
 package ru.javawebinar.topjava.repository.jpa;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
+@Transactional(readOnly = true)
 public class JpaMealRepository implements MealRepository {
+
+    @PersistenceContext
+    private EntityManager em1;
 
     @Override
     public Meal save(Meal meal, int userId) {
@@ -27,7 +34,9 @@ public class JpaMealRepository implements MealRepository {
 
     @Override
     public List<Meal> getAll(int userId) {
-        return null;
+        return em1.createNamedQuery(Meal.ALL_SORTED, Meal.class)
+                .setParameter(1, userId)
+                .getResultList();
     }
 
     @Override
