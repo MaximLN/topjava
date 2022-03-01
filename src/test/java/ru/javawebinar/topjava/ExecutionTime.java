@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.TimeUnit;
 
-
 public class ExecutionTime {
 
     private static final Logger log = LoggerFactory.getLogger("result");
@@ -18,8 +17,8 @@ public class ExecutionTime {
     public static final Stopwatch STOPWATCH = new Stopwatch() {
         @Override
         protected void finished(long nanos, Description description) {
-            String result = "method (" + description.getMethodName() + ") execution time: "
-                    + TimeUnit.NANOSECONDS.toMillis(nanos) + " ms\n";
+            String result = description.getMethodName() + " : "
+                    + TimeUnit.NANOSECONDS.toMillis(nanos) + " ms";
             results.append(result).append('\n');
             log.info(result);
         }
@@ -30,6 +29,7 @@ public class ExecutionTime {
         @Override
         protected void before() {
             results.setLength(0);
+            results.append("\n\nExecution time \n");
         }
 
         @Override

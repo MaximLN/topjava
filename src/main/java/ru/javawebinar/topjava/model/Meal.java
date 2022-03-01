@@ -24,7 +24,7 @@ public class Meal extends AbstractBaseEntity {
     public static final String ALL_SORTED = "Meal.getAllSorted";
     public static final String ALL_SORTED_FILTERED = "Meal.getAllSortedFiltered";
 
-    @Column(name = "date_time")
+    @Column(name = "date_time", nullable = true)
     @NotNull
     private LocalDateTime dateTime;
 
@@ -38,7 +38,7 @@ public class Meal extends AbstractBaseEntity {
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = true)
     @NotNull
     private User user;
 
