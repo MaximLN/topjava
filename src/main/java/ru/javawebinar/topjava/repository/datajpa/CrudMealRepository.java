@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
-
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
@@ -19,4 +19,6 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     List<Meal> findAllByUser_IdOrderByDateTimeDesc(@Param("userId") int userId);
 
     Meal getMealByIdAndUser_Id(@Param("id") int id, @Param("userId") int userId);
+
+    List <Meal> findAllByUser_IdAndDateTimeGreaterThanEqualAndDateTimeLessThanOrderByDateTimeDesc(@Param("userId") int userId, @Param("startDateTime") LocalDateTime startDateTime, @Param("endDateTime") LocalDateTime endDateTime);
 }
