@@ -7,6 +7,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 
+import java.util.List;
+
 public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Transactional
     @Modifying
@@ -14,6 +16,7 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
     @Query("DELETE FROM Meal m WHERE m.id=:id AND m.user.id=:userId")
     int delete(@Param("id") int id, @Param("userId") int userId);
 
-    @Query("SELECT m FROM Meal m WHERE m.id=:id AND m.user.id=:userId")
-    Meal getById(@Param("id") int id, @Param("userId") int userId);
+    List<Meal> findAllByUser_IdOrderByDateTimeDesc(@Param("userId") int userId);
+
+    Meal getMealByIdAndUser_Id(@Param("id") int id, @Param("userId") int userId);
 }
