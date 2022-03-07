@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import ru.javawebinar.topjava.ActiveDbProfileResolver;
 import ru.javawebinar.topjava.Profiles;
 
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 import static org.slf4j.LoggerFactory.getLogger;
@@ -43,7 +44,7 @@ public abstract class AbstractServiceTest {
 
     @AfterClass
     public static void printResult() {
-        log.info("\n-----getActiveDbProfile: " + Profiles.getActiveDbProfile());
+        log.info("\n-----getActiveDbProfile: " + Arrays.toString(Profiles.getActiveDbProfile()));
         log.info("\n---------------------------------" +
                 "\nTest                 Duration, ms" +
                 "\n---------------------------------" +
