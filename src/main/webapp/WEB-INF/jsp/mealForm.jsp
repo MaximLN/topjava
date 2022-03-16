@@ -4,8 +4,7 @@
 
 <html>
 <head>
-    <title><spring:message code="meal.title"/></title>
-    <link rel="stylesheet" href="css/style.css">
+    <jsp:include page="fragments/headTag.jsp"/>
 </head>
 <body>
 <section>
