@@ -7,7 +7,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
@@ -34,15 +38,19 @@ public class JdbcMealRepository implements MealRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
+    DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+    TransactionDefinition def = new DefaultTransactionDefinition();
+
     @Override
     public Meal save(Meal meal, int userId) {
+        transactionManager.setDataSource(jdbcTemplate.getDataSource());
+        TransactionStatus txStatus = transactionManager.getTransaction(def);
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
                 .addValue("calories", meal.getCalories())
                 .addValue("date_time", meal.getDateTime())
                 .addValue("user_id", userId);
-
         if (meal.isNew()) {
             Number newId = insertMeal.executeAndReturnKey(map);
             meal.setId(newId.intValue());
@@ -51,9 +59,11 @@ public class JdbcMealRepository implements MealRepository {
                     "UPDATE meals " +
                     "   SET description=:description, calories=:calories, date_time=:date_time " +
                     " WHERE id=:id AND user_id=:user_id", map) == 0) {
+                transactionManager.rollback(txStatus);
                 return null;
             }
         }
+        transactionManager.commit(txStatus);
         return meal;
     }
 
