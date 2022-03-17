@@ -41,7 +41,10 @@ public class JspMealController {
         String result = "meals";
         model.addAttribute("meals", abstractMealController.getAll());
         switch (action == null ? "all" : action) {
-            case "delete" -> delete(id, model);
+            case "delete" -> {
+                delete(id, model);
+                return "redirect:meals";
+            }
             case "create", "update" -> result = createOrUpdate(id, action, model);
             case "filter" -> filter(startDate, endDate, startTime, endTime, model);
         }
