@@ -7,7 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 
@@ -32,14 +31,13 @@ public class JspMealController extends AbstractMealController {
 
     @GetMapping("")
     public String doGet(Model model) {
-        System.out.println("--------------------------doGet");
         model.addAttribute("meals", getAll());
         return "meals";
     }
 
     @GetMapping("/update")
     String update(HttpServletRequest request, Model model) {
-        final Meal meal = request.getParameter("id")==null ?
+        final Meal meal = request.getParameter("id") == null ?
                 new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
                 get(Integer.parseInt(request.getParameter("id")));
         model.addAttribute("meal", meal);
@@ -49,29 +47,18 @@ public class JspMealController extends AbstractMealController {
     @GetMapping("/delete")
     String delete(HttpServletRequest request, Model model) {
         delete(Integer.parseInt(request.getParameter("id")));
-        System.out.println("-------------- "+(request.getParameter("id")));
         model.addAttribute("meals", getAll());
         return "redirect:/meals";
     }
 
     @GetMapping("/filter")
     String filter(HttpServletRequest request, Model model) {
-        System.out.println("----------------------- "+request.getRequestURL());
         LocalDate start_Date = parseLocalDate(request.getParameter("startDate"));
         LocalDate end_Date = parseLocalDate(request.getParameter("endDate"));
         LocalTime start_Time = parseLocalTime(request.getParameter("startTime"));
         LocalTime end_Time = parseLocalTime(request.getParameter("endTime"));
         model.addAttribute("meals", getBetween(start_Date, start_Time, end_Date, end_Time));
-        System.out.println("----------------------- "+model.getAttribute("meals"));
         return "meals";
-    }
-
-    public void filter(String startDate, String endDate, String startTime, String endTime, Model model) {
-        LocalDate start_Date = parseLocalDate(startDate);
-        LocalDate end_Date = parseLocalDate(endDate);
-        LocalTime start_Time = parseLocalTime(startTime);
-        LocalTime end_Time = parseLocalTime(endTime);
-        model.addAttribute("meals", getBetween(start_Date, start_Time, end_Date, end_Time));
     }
 
     @PostMapping("")
@@ -85,7 +72,7 @@ public class JspMealController extends AbstractMealController {
                             request.getParameter("description"), Integer.parseInt(request.getParameter("calories"))),
                     Integer.parseInt(request.getParameter("id")));
         }
-        return "redirect:/";
+        return "redirect:/meals";
     }
 
 }
