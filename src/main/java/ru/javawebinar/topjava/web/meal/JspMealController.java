@@ -6,6 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 
@@ -19,6 +21,7 @@ import java.util.Objects;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalDate;
 import static ru.javawebinar.topjava.util.DateTimeUtil.parseLocalTime;
 
+@RequestMapping("/meals")
 @Controller
 public class JspMealController extends AbstractMealController {
     private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
@@ -27,35 +30,40 @@ public class JspMealController extends AbstractMealController {
         super(service);
     }
 
-    @GetMapping("/meals")
-    public String doGet(HttpServletRequest request, Model model) {
-        log.info("Get meals");
+    @GetMapping("")
+    public String doGet(Model model) {
+        System.out.println("--------------------------doGet");
         model.addAttribute("meals", getAll());
-        String result = "meals";
-        model.addAttribute("meals", getAll());
-        switch (request.getParameter("action") == null ? "all" : request.getParameter("action")) {
-            case "delete" -> {
-                delete(request.getParameter("id"), model);
-                return "redirect:meals";
-            }
-            case "create", "update" -> result = createOrUpdate(request.getParameter("id"), request.getParameter("action"), model);
-            case "filter" -> filter(request.getParameter("startDate"), request.getParameter("endDate"),
-                    request.getParameter("startTime"), request.getParameter("endTime"), model);
-        }
-        return result;
+        return "meals";
     }
 
-    public void delete(String id, Model model) {
-        delete(Integer.parseInt(id));
-        model.addAttribute("meals", getAll());
-    }
-
-    public String createOrUpdate(String id, String action, Model model) {
-        final Meal meal = "create".equals(action) ?
+    @GetMapping("/update")
+    String update(HttpServletRequest request, Model model) {
+        final Meal meal = request.getParameter("id")==null ?
                 new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000) :
-                get(Integer.parseInt(id));
+                get(Integer.parseInt(request.getParameter("id")));
         model.addAttribute("meal", meal);
         return "mealForm";
+    }
+
+    @GetMapping("/delete")
+    String delete(HttpServletRequest request, Model model) {
+        delete(Integer.parseInt(request.getParameter("id")));
+        System.out.println("-------------- "+(request.getParameter("id")));
+        model.addAttribute("meals", getAll());
+        return "redirect:/meals";
+    }
+
+    @GetMapping("/filter")
+    String filter(HttpServletRequest request, Model model) {
+        System.out.println("----------------------- "+request.getRequestURL());
+        LocalDate start_Date = parseLocalDate(request.getParameter("startDate"));
+        LocalDate end_Date = parseLocalDate(request.getParameter("endDate"));
+        LocalTime start_Time = parseLocalTime(request.getParameter("startTime"));
+        LocalTime end_Time = parseLocalTime(request.getParameter("endTime"));
+        model.addAttribute("meals", getBetween(start_Date, start_Time, end_Date, end_Time));
+        System.out.println("----------------------- "+model.getAttribute("meals"));
+        return "meals";
     }
 
     public void filter(String startDate, String endDate, String startTime, String endTime, Model model) {
@@ -66,7 +74,7 @@ public class JspMealController extends AbstractMealController {
         model.addAttribute("meals", getBetween(start_Date, start_Time, end_Date, end_Time));
     }
 
-    @PostMapping("/meals")
+    @PostMapping("")
     public String doPost(HttpServletRequest request) {
         log.info("Post meals");
         if (Objects.equals(request.getParameter("id"), "")) {
@@ -77,7 +85,7 @@ public class JspMealController extends AbstractMealController {
                             request.getParameter("description"), Integer.parseInt(request.getParameter("calories"))),
                     Integer.parseInt(request.getParameter("id")));
         }
-        return "redirect:meals";
+        return "redirect:/";
     }
 
 }
