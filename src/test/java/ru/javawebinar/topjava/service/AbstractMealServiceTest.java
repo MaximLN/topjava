@@ -1,9 +1,8 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.*;
-import org.junit.rules.TestName;
+import org.junit.Assert;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.dao.DataAccessException;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
@@ -18,20 +17,10 @@ import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.ADMIN_ID;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 
-public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
+public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Autowired
     protected MealService service;
-
-    @Autowired
-    Environment env;
-
-    @Rule
-    public TestName name = new TestName();
-
-    public Environment getEnv() {
-        return env;
-    }
 
     @Test
     public void delete() {
@@ -111,21 +100,6 @@ public abstract class AbstractMealServiceTest extends AbstractServiceTest {
     @Test
     public void getBetweenWithNullDates() {
         MEAL_MATCHER.assertMatch(service.getBetweenInclusive(null, null, USER_ID), meals);
-    }
-
-
-    @Before
-    public void checkOs() throws Exception {
-        Assume.assumeTrue(isJdbc());
-    }
-
-    public boolean isJdbc() {
-        for (String profileName : getEnv().getActiveProfiles()) {
-            if (profileName.equalsIgnoreCase("jdbc") && name.getMethodName().equalsIgnoreCase("createWithException")) {
-                return false;
-            }
-        }
-        return true;
     }
 
     @Test

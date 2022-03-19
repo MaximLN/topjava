@@ -7,11 +7,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.TransactionDefinition;
-import org.springframework.transaction.TransactionStatus;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
@@ -38,13 +35,9 @@ public class JdbcMealRepository implements MealRepository {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
-    DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-    TransactionDefinition def = new DefaultTransactionDefinition();
-
     @Override
+    @Transactional
     public Meal save(Meal meal, int userId) {
-        transactionManager.setDataSource(jdbcTemplate.getDataSource());
-        TransactionStatus txStatus = transactionManager.getTransaction(def);
         MapSqlParameterSource map = new MapSqlParameterSource()
                 .addValue("id", meal.getId())
                 .addValue("description", meal.getDescription())
@@ -59,20 +52,20 @@ public class JdbcMealRepository implements MealRepository {
                     "UPDATE meals " +
                     "   SET description=:description, calories=:calories, date_time=:date_time " +
                     " WHERE id=:id AND user_id=:user_id", map) == 0) {
-                transactionManager.rollback(txStatus);
                 return null;
             }
         }
-        transactionManager.commit(txStatus);
         return meal;
     }
 
     @Override
+    @Transactional
     public boolean delete(int id, int userId) {
         return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId) != 0;
     }
 
     @Override
+    @Transactional
     public Meal get(int id, int userId) {
         List<Meal> meals = jdbcTemplate.query(
                 "SELECT * FROM meals WHERE id = ? AND user_id = ?", ROW_MAPPER, id, userId);
@@ -80,12 +73,14 @@ public class JdbcMealRepository implements MealRepository {
     }
 
     @Override
+    @Transactional
     public List<Meal> getAll(int userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", ROW_MAPPER, userId);
     }
 
     @Override
+    @Transactional
     public List<Meal> getBetweenHalfOpen(LocalDateTime startDateTime, LocalDateTime endDateTime, int userId) {
         return jdbcTemplate.query(
                 "SELECT * FROM meals WHERE user_id=?  AND date_time >=  ? AND date_time < ? ORDER BY date_time DESC",

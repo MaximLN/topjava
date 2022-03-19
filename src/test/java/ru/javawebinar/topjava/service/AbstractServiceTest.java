@@ -1,10 +1,15 @@
 package ru.javawebinar.topjava.service;
 
+import org.junit.Assume;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.Stopwatch;
+import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
@@ -40,5 +45,29 @@ public abstract class AbstractServiceTest {
                 throw getRootCause(e);
             }
         });
+    }
+
+    @Autowired
+    Environment env;
+
+    @Rule
+    public TestName name = new TestName();
+
+    public Environment getEnv() {
+        return env;
+    }
+
+    @Before
+    public void checkProfile() throws Exception {
+        Assume.assumeTrue(isJdbc());
+    }
+
+    public boolean isJdbc() {
+        for (String profileName : getEnv().getActiveProfiles()) {
+            if (profileName.equalsIgnoreCase("jdbc") && name.getMethodName().equalsIgnoreCase("createWithException")) {
+                return false;
+            }
+        }
+        return true;
     }
 }
