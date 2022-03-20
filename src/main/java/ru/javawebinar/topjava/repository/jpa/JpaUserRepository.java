@@ -8,7 +8,9 @@ import ru.javawebinar.topjava.repository.UserRepository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 @Transactional(readOnly = true)
@@ -62,6 +64,9 @@ public class JpaUserRepository implements UserRepository {
         List<User> users = em.createNamedQuery(User.BY_EMAIL, User.class)
                 .setParameter(1, email)
                 .getResultList();
+        Set<User> usersNoDuplicates = new HashSet<>(users);
+        users.clear();
+        users.addAll(usersNoDuplicates);
         return DataAccessUtils.singleResult(users);
     }
 
