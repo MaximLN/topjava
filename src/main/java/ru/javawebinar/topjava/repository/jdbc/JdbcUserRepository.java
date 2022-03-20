@@ -7,12 +7,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository
 public class JdbcUserRepository implements UserRepository {
@@ -38,15 +41,16 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
+        String newRole = user.getRoles().iterator().next().toString();
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
-
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
+            jdbcTemplate.execute("INSERT INTO user_roles (user_id, role) VALUES("+user.getId()+", '"+newRole+"')");
         } else if (namedParameterJdbcTemplate.update("""
                    UPDATE users SET name=:name, email=:email, password=:password, 
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
-                """, parameterSource) == 0) {
+                """, parameterSource) == 0 || jdbcTemplate.update("UPDATE user_roles SET role=? WHERE user_id=?",newRole, user.id())== 0) {
             return null;
         }
         return user;
@@ -62,7 +66,23 @@ public class JdbcUserRepository implements UserRepository {
     @Transactional
     public User get(int id) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE id=?", ROW_MAPPER, id);
+        if (users.size() == 1) {
+            users.get(0).setRoles(EnumSet.copyOf(getRoles(id)));
+        }
         return DataAccessUtils.singleResult(users);
+
+    }
+
+    @Transactional
+    public EnumSet getRoles(int id) {
+        SqlRowSet rowSet = jdbcTemplate.queryForRowSet("SELECT * FROM user_roles WHERE user_id=?", id);
+        List<String> roles = new ArrayList<>();
+        while (rowSet.next()) {
+            roles.add(rowSet.getString("role"));
+        }
+        return roles.stream()
+                .map(Role::valueOf)
+                .collect(Collectors.toCollection(() -> EnumSet.noneOf(Role.class)));
     }
 
     @Override
@@ -70,12 +90,16 @@ public class JdbcUserRepository implements UserRepository {
     public User getByEmail(String email) {
 //        return jdbcTemplate.queryForObject("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
+        if (users.size() == 1) {
+            users.get(0).setRoles(EnumSet.copyOf(getRoles(users.get(0).getId())));
+        }
         return DataAccessUtils.singleResult(users);
     }
 
     @Override
     @Transactional
     public List<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+//        return jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM users JOIN user_roles ON users.id = user_roles.user_id ORDER BY name, email", ROW_MAPPER);
     }
 }
