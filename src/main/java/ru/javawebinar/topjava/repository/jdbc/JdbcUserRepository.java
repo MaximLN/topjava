@@ -41,15 +41,16 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
+        String newRole = user.getRoles().iterator().next().toString();
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
-
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
+            jdbcTemplate.execute("INSERT INTO user_roles (user_id, role) VALUES("+user.getId()+", '"+newRole+"')");
         } else if (namedParameterJdbcTemplate.update("""
                    UPDATE users SET name=:name, email=:email, password=:password, 
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
-                """, parameterSource) == 0) {
+                """, parameterSource) == 0 || jdbcTemplate.update("UPDATE user_roles SET role=? WHERE user_id=?",newRole, user.id())== 0) {
             return null;
         }
         return user;
@@ -98,6 +99,7 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public List<User> getAll() {
-        return jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+//        return jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+        return jdbcTemplate.query("SELECT * FROM users JOIN user_roles ON users.id = user_roles.user_id ORDER BY name, email", ROW_MAPPER);
     }
 }
