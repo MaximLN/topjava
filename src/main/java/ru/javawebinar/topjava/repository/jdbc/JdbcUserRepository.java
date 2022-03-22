@@ -15,10 +15,7 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -50,7 +47,7 @@ public class JdbcUserRepository implements UserRepository {
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            jdbcTemplate.execute("INSERT INTO user_roles (user_id, role) VALUES(" + user.getId() + ", '" + newRole + "')");
+            jdbcTemplate.update("INSERT INTO user_roles (user_id, role) VALUES(?, ?)", user.getId(), newRole);
         } else if (namedParameterJdbcTemplate.update("""
                    UPDATE users SET name=:name, email=:email, password=:password, 
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
@@ -100,7 +97,7 @@ public class JdbcUserRepository implements UserRepository {
     @Transactional
     public List<User> getAll() {
         List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        HashMap<Integer, List<String>> userIdAndRoles = new HashMap<>();
+        Map<Integer, List<String>> userIdAndRoles = new HashMap<>();
         jdbcTemplate.query("SELECT user_id, role FROM user_roles", (ResultSet rs) -> {
             while (rs.next()) {
                 userIdAndRoles.computeIfAbsent(Integer.parseInt(rs.getString("user_id")),
@@ -109,12 +106,13 @@ public class JdbcUserRepository implements UserRepository {
             return userIdAndRoles;
         });
         for (User user : users) {
-            user.setRoles(EnumSet.noneOf(Role.class));
             if (userIdAndRoles.get(user.getId()) != null) {
                 EnumSet<Role> roles = userIdAndRoles.get(user.getId()).stream()
                         .map(Role::valueOf)
                         .collect(Collectors.toCollection(() -> EnumSet.noneOf(Role.class)));
                 user.setRoles(EnumSet.copyOf(roles));
+            } else {
+                user.setRoles(EnumSet.noneOf(Role.class));
             }
         }
         return users;
