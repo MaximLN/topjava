@@ -14,8 +14,10 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,7 +99,24 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public List<User> getAll() {
-//        return jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
-        return jdbcTemplate.query("SELECT * FROM users JOIN user_roles ON users.id = user_roles.user_id ORDER BY name, email", ROW_MAPPER);
+        List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+        HashMap<Integer, List<String>> userIdAndRoles = new HashMap<>();
+        jdbcTemplate.query("SELECT user_id, role FROM user_roles", (ResultSet rs) -> {
+            while (rs.next()) {
+                userIdAndRoles.computeIfAbsent(Integer.parseInt(rs.getString("user_id")),
+                        k -> new ArrayList<>()).add(rs.getString("role"));
+            }
+            return userIdAndRoles;
+        });
+        for (User user : users) {
+            user.setRoles(EnumSet.noneOf(Role.class));
+            if (userIdAndRoles.get(user.getId()) != null) {
+                EnumSet<Role> roles = userIdAndRoles.get(user.getId()).stream()
+                        .map(Role::valueOf)
+                        .collect(Collectors.toCollection(() -> EnumSet.noneOf(Role.class)));
+                user.setRoles(EnumSet.copyOf(roles));
+            }
+        }
+        return users;
     }
 }
