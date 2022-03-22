@@ -30,7 +30,7 @@ public class JspMealController extends AbstractMealController {
     }
 
     @GetMapping("")
-    public String doGet(Model model) {
+    public String getAll(Model model) {
         model.addAttribute("meals", getAll());
         return "meals";
     }
@@ -61,16 +61,16 @@ public class JspMealController extends AbstractMealController {
         return "meals";
     }
 
-    @PostMapping("")
+    @PostMapping
     public String doPost(HttpServletRequest request) {
         log.info("Post meals");
+        LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("dateTime"));
+        String description = request.getParameter("description");
+        int calories = Integer.parseInt(request.getParameter("calories"));
         if (Objects.equals(request.getParameter("id"), "")) {
-            create(new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
-                    request.getParameter("description"), Integer.parseInt(request.getParameter("calories"))));
+            create(new Meal(localDateTime, description, calories));
         } else {
-            update(new Meal(LocalDateTime.parse(request.getParameter("dateTime")),
-                            request.getParameter("description"), Integer.parseInt(request.getParameter("calories"))),
-                    Integer.parseInt(request.getParameter("id")));
+            update(new Meal(localDateTime, description, calories), Integer.parseInt(request.getParameter("id")));
         }
         return "redirect:/meals";
     }
