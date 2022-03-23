@@ -7,20 +7,18 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.DefaultTransactionDefinition;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-public class JdbcMealRepository extends JdbcValidation implements MealRepository {
+public class JdbcMealRepository extends JdbcUtil implements MealRepository {
 
     private static final RowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
 
@@ -38,9 +36,6 @@ public class JdbcMealRepository extends JdbcValidation implements MealRepository
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
-
-    DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-    TransactionDefinition def = new DefaultTransactionDefinition();
 
     @Override
     @Transactional
@@ -72,7 +67,14 @@ public class JdbcMealRepository extends JdbcValidation implements MealRepository
     @Override
     @Transactional
     public boolean delete(int id, int userId) {
-        return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId) != 0;
+        transactionManager.setDataSource(jdbcTemplate.getDataSource());
+        TransactionStatus txStatus = transactionManager.getTransaction(def);
+        try {
+            return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId) != 0;
+        } catch (NotFoundException notFoundException) {
+            transactionManager.rollback(txStatus);
+        }
+        return false;
     }
 
     @Override

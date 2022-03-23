@@ -1,5 +1,9 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
 import javax.validation.Validator;
@@ -8,7 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public abstract class JdbcValidation {
+public abstract class JdbcUtil {
+
+    DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+    TransactionDefinition def = new DefaultTransactionDefinition();
 
     ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
     Validator validator = validatorFactory.getValidator();
