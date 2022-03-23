@@ -42,17 +42,27 @@ public class JdbcUserRepository implements UserRepository {
     @Override
     @Transactional
     public User save(User user) {
-        String newRole = user.getRoles().iterator().next().toString();
+        List<Role> roles = new ArrayList<>(user.getRoles());
         BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(user);
         if (user.isNew()) {
             Number newKey = insertUser.executeAndReturnKey(parameterSource);
             user.setId(newKey.intValue());
-            jdbcTemplate.update("INSERT INTO user_roles (user_id, role) VALUES(?, ?)", user.getId(), newRole);
+            for (Role role : roles) {
+                if (jdbcTemplate.update("INSERT INTO user_roles (user_id, role) VALUES(?, ?)", user.getId(), role.toString()) == 0) {
+                    return null;
+                }
+            }
         } else if (namedParameterJdbcTemplate.update("""
                    UPDATE users SET name=:name, email=:email, password=:password, 
                    registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id
-                """, parameterSource) == 0 || jdbcTemplate.update("UPDATE user_roles SET role=? WHERE user_id=?", newRole, user.id()) == 0) {
+                """, parameterSource) == 0 || jdbcTemplate.update("DELETE FROM user_roles WHERE user_id=?", user.id()) == 0) {
             return null;
+        } else if (roles.size() > 0) {
+            for (Role role : roles) {
+                if (jdbcTemplate.update("INSERT INTO user_roles (user_id, role) VALUES(?, ?)", user.getId(), role.toString()) == 0) {
+                    return null;
+                }
+            }
         }
         return user;
     }
@@ -89,7 +99,9 @@ public class JdbcUserRepository implements UserRepository {
     @Transactional
     public User getByEmail(String email) {
         List<User> users = jdbcTemplate.query("SELECT * FROM users WHERE email=?", ROW_MAPPER, email);
-        DataAccessUtils.requiredSingleResult(users).setRoles(EnumSet.copyOf(getRoles(DataAccessUtils.singleResult(users).getId())));
+        if (!users.isEmpty()) {
+            DataAccessUtils.requiredSingleResult(users).setRoles(EnumSet.copyOf(getRoles(DataAccessUtils.singleResult(users).getId())));
+        }
         return DataAccessUtils.singleResult(users);
     }
 
