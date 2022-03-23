@@ -6,8 +6,10 @@
 <jsp:include page="fragments/headTag.jsp"/>
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
+<spring:message code="mealform.create" var="var_create"/>
+<spring:message code="mealform.edit" var="var_edit"/>
 <section>
-    <h2>${param.action == 'create' ? 'Create meal' : 'Edit meal'}</h2>
+    <h2>${param.action == 'create' ? var_create : var_edit}</h2>
     <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.Meal" scope="request"/>
     <form method="post" action="${pageContext.request.contextPath}/meals">
         <input type="hidden" name="id" value="${meal.id}">
