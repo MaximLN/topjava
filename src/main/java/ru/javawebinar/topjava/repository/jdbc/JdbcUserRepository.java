@@ -14,6 +14,10 @@ import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
 import java.sql.ResultSet;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -81,6 +85,7 @@ public class JdbcUserRepository implements UserRepository {
             DataAccessUtils.requiredSingleResult(users).setRoles(getRoles(id));
         }
         return DataAccessUtils.singleResult(users);
+//        return validation(DataAccessUtils.singleResult(users));
     }
 
     @Transactional
@@ -102,13 +107,19 @@ public class JdbcUserRepository implements UserRepository {
         if (!users.isEmpty()) {
             DataAccessUtils.requiredSingleResult(users).setRoles(EnumSet.copyOf(getRoles(DataAccessUtils.singleResult(users).getId())));
         }
-        return DataAccessUtils.singleResult(users);
+        return validation(DataAccessUtils.singleResult(users));
     }
 
     @Override
     @Transactional
     public List<User> getAll() {
-        List<User> users = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+        List<User> uncheckedUsers = jdbcTemplate.query("SELECT * FROM users ORDER BY name, email", ROW_MAPPER);
+        List<User> users = new ArrayList<>();
+        for (User user : uncheckedUsers) {
+            if (validation(user) != null) {
+                users.add(user);
+            }
+        }
         Map<Integer, List<String>> userIdAndRoles = new HashMap<>();
         jdbcTemplate.query("SELECT user_id, role FROM user_roles", (ResultSet rs) -> {
             while (rs.next()) {
@@ -128,5 +139,12 @@ public class JdbcUserRepository implements UserRepository {
             }
         }
         return users;
+    }
+
+    public User validation(User user) {
+        ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+        Validator validator = validatorFactory.getValidator();
+        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        return violations.size() == 0 ? user : null;
     }
 }
