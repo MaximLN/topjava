@@ -1,7 +1,5 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Assume;
-import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
@@ -48,23 +46,18 @@ public abstract class AbstractServiceTest {
     }
 
     @Autowired
-    Environment env;
+    protected Environment env;
 
     @Rule
     public TestName name = new TestName();
 
-    public Environment getEnv() {
+    protected Environment getEnv() {
         return env;
     }
 
-    @Before
-    public void checkProfile() throws Exception {
-        Assume.assumeTrue(isJdbc());
-    }
-
-    public boolean isJdbc() {
+    public boolean notJdbc() {
         for (String profileName : getEnv().getActiveProfiles()) {
-            if (profileName.equalsIgnoreCase("jdbc") && name.getMethodName().equalsIgnoreCase("createWithException")) {
+            if (profileName.equalsIgnoreCase("jdbc")) {
                 return false;
             }
         }
