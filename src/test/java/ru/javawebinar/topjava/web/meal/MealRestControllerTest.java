@@ -35,7 +35,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
         perform(MockMvcRequestBuilders.get(REST_URL))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_MATCHER.contentJson(meals))
+                .andExpect(MEALTO_MATCHER.contentJson(mealTos))
                 .andDo(print());
     }
 
@@ -45,7 +45,7 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 + "/" + LocalDateTime.of(2020, Month.JANUARY, 30, LocalTime.MAX.getHour(), LocalTime.MAX.getMinute())))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(MEAL_MATCHER.contentJson(meal3, meal2, meal1))
+                .andExpect(MEALTO_MATCHER.contentJson(mealTo3, mealTo2, mealTo1))
                 .andDo(print());
     }
 
