@@ -47,11 +47,7 @@ public class MealRestController extends AbstractMealController {
     }
 
     @Override
-//    @DeleteMapping("/{id}")
-    @RequestMapping(
-            value = "/{id}",
-            produces = "application/json",
-            method = RequestMethod.DELETE)
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable int id) {
         super.delete(id);
