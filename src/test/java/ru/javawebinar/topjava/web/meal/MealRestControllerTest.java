@@ -59,7 +59,6 @@ public class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(MEAL_MATCHER.contentJson(meal1));
     }
 
-
     @Test
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL + MEAL1_ID))
