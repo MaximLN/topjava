@@ -11,17 +11,14 @@ public class NullableDateFormatter implements Formatter<LocalDate> {
     @Override
     public LocalDate parse(String text, Locale locale) throws ParseException {
         if (!text.equals("null")) {
-            System.out.println("!text.equals(null)");
             return LocalDate.parse(text, DateTimeFormatter.ISO_LOCAL_DATE.withLocale(locale));
         } else {
-            System.out.println("text.equals(null)");
-            return null;
+            return LocalDate.MIN;
         }
     }
 
     @Override
     public String print(LocalDate object, Locale locale) {
-        System.out.println("---------------------print ");
         return object.format(DateTimeFormatter.ISO_LOCAL_DATE.withLocale(locale));
     }
 }

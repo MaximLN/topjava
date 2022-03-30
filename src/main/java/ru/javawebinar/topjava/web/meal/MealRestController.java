@@ -32,7 +32,18 @@ public class MealRestController extends AbstractMealController {
                                    @RequestParam LocalTime startTime,
                                    @RequestParam LocalDate endDate,
                                    @RequestParam LocalTime endTime) {
-        System.out.println("---------------getBetween---------------");
+        if (startDate.equals(LocalDate.MIN)) {
+            startDate = null;
+        }
+        if (endDate.equals(LocalDate.MIN)) {
+            endDate = null;
+        }
+        if (startTime.equals(LocalTime.MIN)) {
+            startTime = null;
+        }
+        if (endTime.equals(LocalTime.MIN)) {
+            endTime = null;
+        }
         return super.getBetween(startDate, startTime, endDate, endTime);
     }
 
