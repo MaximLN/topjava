@@ -225,8 +225,37 @@ Java Enterprise Online Project
 -  <a href="https://stepic.org/course/Введение-в-Linux-73">Введение в Linux</a>
 
 #### Книги
--  <a href="http://www.ozon.ru/context/detail/id/24828676/">Джошуа Блох: Java. Эффективное программирование. Второе издание</a>
--  <a href="http://www.labirint.ru/books/87603/">Гамма, Хелм, Джонсон: Приемы объектно-ориентированного проектирования. Паттерны проектирования</a>
--  <a href="http://www.bookvoed.ru/book?id=639284">Редмонд Э.: Семь баз данных за семь недель. Введение в современные базы данных и идеологию NoSQL</a>
--  <a href="http://www.ozon.ru/context/detail/id/3174887/">Brian Goetz: Java Concurrency in Practice</a>
--  <a href="http://bookvoed.ru/book?id=2593572">G.L. McDowell: Cracking the Coding Interview</a>
+- <a href="http://www.ozon.ru/context/detail/id/24828676/">Джошуа Блох: Java. Эффективное программирование. Второе издание</a>
+- <a href="http://www.labirint.ru/books/87603/">Гамма, Хелм, Джонсон: Приемы объектно-ориентированного проектирования. Паттерны проектирования</a>
+- <a href="http://www.bookvoed.ru/book?id=639284">Редмонд Э.: Семь баз данных за семь недель. Введение в современные базы данных и идеологию NoSQL</a>
+- <a href="http://www.ozon.ru/context/detail/id/3174887/">Brian Goetz: Java Concurrency in Practice</a>
+- <a href="http://bookvoed.ru/book?id=2593572">G.L. McDowell: Cracking the Coding Interview</a>
+
+getAll
+curl --location --request GET 'http://localhost:8080/topjava/rest/meals' \
+--header 'Cookie: JSESSIONID=CBD417F4EF0EB0D1EE5B23F48B8A9DCA'
+
+getBetween
+curl --location --request GET 'http://localhost:8080/topjava/rest/meals/filtered?startDate=null&startTime=00:00&endDate=2020-01-30&endTime=null' \
+--header 'Cookie: JSESSIONID=CBD417F4EF0EB0D1EE5B23F48B8A9DCA'
+
+get 100003
+curl --location --request GET 'http://localhost:8080/topjava/rest/meals/100003' \
+--header 'Cookie: JSESSIONID=CBD417F4EF0EB0D1EE5B23F48B8A9DCA'
+
+update 100004
+curl --location --request PUT 'http://localhost:8080/topjava/rest/meals/100003' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: JSESSIONID=CBD417F4EF0EB0D1EE5B23F48B8A9DCA' \
+--data-raw '{"id":100003,"dateTime":"2020-01-30T10:02:00","description":"Обновленный завтрак","calories":200}'
+
+delete 100003
+curl --location --request DELETE 'http://localhost:8080/topjava/rest/meals/100003' \
+--header 'Cookie: JSESSIONID=CBD417F4EF0EB0D1EE5B23F48B8A9DCA'
+
+create
+curl --location --request POST 'http://localhost:8080/topjava/rest/meals/' \
+--header 'Content-Type: application/json' \
+--header 'Cookie: JSESSIONID=CBD417F4EF0EB0D1EE5B23F48B8A9DCA' \
+--data-raw '{"dateTime":"2020-02-01T18:00:00","description":"Созданный ужин","calories":300}'
+
