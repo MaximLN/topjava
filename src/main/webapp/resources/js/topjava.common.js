@@ -78,3 +78,15 @@ function failNoty(jqXHR) {
     });
     failedNote.show()
 }
+
+function filtered() {
+
+    var form = $("#filterForm");
+    var actionUrl = form.attr('action');
+
+    $.ajax({
+        type: "GET",
+        url: actionUrl,
+        data: form.serialize()
+    });
+}

@@ -14,6 +14,7 @@
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
 
         <div class="form-group">
+            <form id="filterForm">
             <label for="startDate" class="col-form-label"><spring:message code="meal.startDate"/></label>
             <input type="date" class="form-control" id="startDate" name="startDate"
                    placeholder="<spring:message code="meal.startDate"/>">
@@ -26,6 +27,12 @@
             <label for="endTime" class="col-form-label"><spring:message code="meal.endTime"/></label>
             <input type="time" class="form-control" id="endTime" name="endTime"
                    placeholder="<spring:message code="meal.startDate"/>">
+
+            <button class="btn btn-primary" onclick="filtered()">
+                <span class="fa fa-plus"></span>
+                <spring:message code="meal.filter"/>
+            </button>
+                </form>
         </div>
 
         <button class="btn btn-primary" onclick="add()">
