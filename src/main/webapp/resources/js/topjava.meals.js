@@ -13,7 +13,7 @@ $(function () {
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime"
+                    "data": "datetime"
                 },
                 {
                     "data": "description"
@@ -22,19 +22,13 @@ $(function () {
                     "data": "calories"
                 },
                 {
-                    "data": "update"
+                    "defaultContent": "Edit",
+                    "orderable": false
                 },
                 {
-                    "data": "delete"
-                },
-            //     {
-            //         "defaultContent": "Edit",
-            //         "orderable": false
-            //     },
-            //     {
-            //         "defaultContent": "Delete",
-            //         "orderable": false
-            //     }
+                    "defaultContent": "Delete",
+                    "orderable": false
+                }
             ],
             "order": [
                 [

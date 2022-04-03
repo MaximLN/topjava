@@ -18,7 +18,6 @@
         </button>
         <table class="table table-striped" id="datatable">
             <thead>
-<%--            <tr data-meal-excess="${meal.excess}">--%>
             <tr>
                 <th><spring:message code="meal.description"/></th>
                 <th><spring:message code="meal.dateTime"/></th>
@@ -29,14 +28,16 @@
             </thead>
             <c:forEach items="${requestScope.meals}" var="meal">
                 <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
-                <tr id="${meal.id}">
+
+                <tr id="${meal.id}" >
+<%--                <tr data-meal-excess="${meal.excess}">--%>
                     <td><c:out value="${meal.description}"/></td>
                     <td>${fn:formatDateTime(meal.dateTime)}</td>
                     <td><c:out value="${meal.calories}"/></td>
-<%--                    <td><a class="delete"><span class="fa fa-remove"></span></a></td>--%>
+                    <td><a class="delete"><span class="fa fa-remove"></span></a></td>
                     <td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>
-                    <td><a href="meals/delete?id=${meal.id}"><spring:message code="common.delete"/></a></td>
                 </tr>
+<%--                </tr>--%>
             </c:forEach>
         </table>
     </div>
