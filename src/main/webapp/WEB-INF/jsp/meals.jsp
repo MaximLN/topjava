@@ -14,25 +14,25 @@
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
 
         <div class="form-group">
-            <form id="filterForm">
-            <label for="startDate" class="col-form-label"><spring:message code="meal.startDate"/></label>
-            <input type="date" class="form-control" id="startDate" name="startDate"
-                   placeholder="<spring:message code="meal.startDate"/>">
-            <label for="startTime" class="col-form-label"><spring:message code="meal.startTime"/></label>
-            <input type="time" class="form-control" id="startTime" name="startTime"
-                   placeholder="<spring:message code="meal.startDate"/>">
-            <label for="endDate" class="col-form-label"><spring:message code="meal.endDate"/></label>
-            <input type="date" class="form-control" id="endDate" name="startDate"
-                   placeholder="<spring:message code="meal.startDate"/>">
-            <label for="endTime" class="col-form-label"><spring:message code="meal.endTime"/></label>
-            <input type="time" class="form-control" id="endTime" name="endTime"
-                   placeholder="<spring:message code="meal.startDate"/>">
+            <form id="filterForm" action="${pageContext.request.contextPath}/meals/filter">
+                <label for="startDate" class="col-form-label"><spring:message code="meal.startDate"/></label>
+                <input type="date" class="form-control" id="startDate" name="startDate"
+                       placeholder="<spring:message code="meal.startDate"/>">
+                <label for="startTime" class="col-form-label"><spring:message code="meal.startTime"/></label>
+                <input type="time" class="form-control" id="startTime" name="startTime"
+                       placeholder="<spring:message code="meal.startDate"/>">
+                <label for="endDate" class="col-form-label"><spring:message code="meal.endDate"/></label>
+                <input type="date" class="form-control" id="endDate" name="startDate"
+                       placeholder="<spring:message code="meal.startDate"/>">
+                <label for="endTime" class="col-form-label"><spring:message code="meal.endTime"/></label>
+                <input type="time" class="form-control" id="endTime" name="endTime"
+                       placeholder="<spring:message code="meal.startDate"/>">
 
-            <button class="btn btn-primary" onclick="filtered()">
-                <span class="fa fa-plus"></span>
-                <spring:message code="meal.filter"/>
-            </button>
-                </form>
+                <button class="btn btn-primary" onclick="filtered()">
+                    <span class="fa fa-plus"></span>
+                    <spring:message code="meal.filter"/>
+                </button>
+            </form>
         </div>
 
         <button class="btn btn-primary" onclick="add()">
@@ -42,8 +42,8 @@
         <table class="table table-striped" id="datatable">
             <thead>
             <tr>
-                <th><spring:message code="meal.description"/></th>
                 <th><spring:message code="meal.dateTime"/></th>
+                <th><spring:message code="meal.description"/></th>
                 <th><spring:message code="meal.calories"/></th>
                 <th></th>
                 <th></th>
@@ -52,15 +52,13 @@
             <c:forEach items="${requestScope.meals}" var="meal">
                 <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
 
-                <tr id="${meal.id}" >
-<%--                <tr data-meal-excess="${meal.excess}">--%>
-                    <td><c:out value="${meal.description}"/></td>
+                <tr id="${meal.id}">
                     <td>${fn:formatDateTime(meal.dateTime)}</td>
+                    <td><c:out value="${meal.description}"/></td>
                     <td><c:out value="${meal.calories}"/></td>
+                    <td><a><span class="fa fa-pencil"></span></a></td>
                     <td><a class="delete"><span class="fa fa-remove"></span></a></td>
-                    <td><a href="meals/update?id=${meal.id}"><spring:message code="common.update"/></a></td>
                 </tr>
-<%--                </tr>--%>
             </c:forEach>
         </table>
     </div>

@@ -86,7 +86,7 @@ function filtered() {
 
     $.ajax({
         type: "GET",
-        url: actionUrl,
-        data: form.serialize()
+        url: actionUrl+'/filter',
+        data: form.serialize(),
     });
 }
