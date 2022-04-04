@@ -90,3 +90,14 @@ function filtered() {
         data: form.serialize(),
     });
 }
+
+function cancelFilter() {
+
+    var form = $("#filterForm");
+    var actionUrl = form.attr('action');
+
+    $.ajax({
+        type: "GET",
+        url: actionUrl,
+    });
+}

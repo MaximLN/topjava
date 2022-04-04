@@ -32,6 +32,10 @@
                     <span class="fa fa-plus"></span>
                     <spring:message code="meal.filter"/>
                 </button>
+                <button class="btn btn-primary" onclick="cancelFilter()">
+                    <span class="fa fa-plus"></span>
+                    <spring:message code="common.cancel"/>
+                </button>
             </form>
         </div>
 
