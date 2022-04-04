@@ -56,7 +56,7 @@
             <c:forEach items="${requestScope.meals}" var="meal">
                 <jsp:useBean id="meal" type="ru.javawebinar.topjava.to.MealTo"/>
 
-                <tr id="${meal.id}">
+                <tr id="${meal.id}" data-meal-excess="${meal.excess}">
                     <td>${fn:formatDateTime(meal.dateTime)}</td>
                     <td><c:out value="${meal.description}"/></td>
                     <td><c:out value="${meal.calories}"/></td>
