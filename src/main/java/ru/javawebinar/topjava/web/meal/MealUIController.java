@@ -17,7 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = MealUIController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 public class MealUIController extends AbstractMealController {
-    static final String REST_URL = "/meals";
+    static final String REST_URL = "/ui/meals";
 
     @Override
     @GetMapping("/{id}")

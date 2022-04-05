@@ -50,6 +50,18 @@ function save() {
     });
 }
 
+function saveMeal() {
+    $.ajax({
+        type: "POST",
+        url: 'meals/',
+        data: form.serialize()
+    }).done(function () {
+        $("#editRow").modal("hide");
+        updateTable();
+        successNoty("Saved");
+    });
+}
+
 let failedNote;
 
 function closeNoty() {
@@ -86,7 +98,7 @@ function filtered() {
 
     $.ajax({
         type: "GET",
-        url: actionUrl+'/filter',
+        url: actionUrl,
         data: form.serialize(),
     });
 }
