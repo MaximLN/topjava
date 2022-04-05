@@ -9,6 +9,12 @@ function makeEditable(datatableApi) {
         }
     });
 
+    // $(".checkbox").click(function () {
+    //     if (confirm('Are you sure?')) {
+    //         updateUser($(this).closest('tr').attr("id"), $(this).closest('tr').attr("data-user-enabled"));
+    //     }
+    // });
+
     $(document).ajaxError(function (event, jqXHR, options, jsExc) {
         failNoty(jqXHR);
     });
@@ -50,18 +56,6 @@ function save() {
     });
 }
 
-function saveMeal() {
-    $.ajax({
-        type: "POST",
-        url: 'meals/',
-        data: form.serialize()
-    }).done(function () {
-        $("#editRow").modal("hide");
-        updateTable();
-        successNoty("Saved");
-    });
-}
-
 let failedNote;
 
 function closeNoty() {
@@ -91,25 +85,12 @@ function failNoty(jqXHR) {
     failedNote.show()
 }
 
-function filtered() {
-
-    var form = $("#filterForm");
-    var actionUrl = form.attr('action');
-
-    $.ajax({
-        type: "GET",
-        url: actionUrl,
-        data: form.serialize(),
-    });
-}
-
-function cancelFilter() {
-
-    var form = $("#filterForm");
-    var actionUrl = form.attr('action');
-
-    $.ajax({
-        type: "GET",
-        url: actionUrl,
-    });
-}
+// function updateUser(id, enabled){
+//         $.ajax({
+//             type: "GET",
+//             url: ctx.ajaxUrl+'enabled?id='+id+'&en='+enabled,
+//         }).done(function () {
+//             updateTable();
+//             successNoty("User Updated");
+//         });
+// }

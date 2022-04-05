@@ -39,3 +39,34 @@ $(function () {
         })
     );
 });
+
+function saveMeal() {
+    $.ajax({
+        type: "POST",
+        url: 'meals/',
+        data: form.serialize()
+    }).done(function () {
+        $("#editRow").modal("hide");
+        updateTable();
+        successNoty("Saved");
+    });
+}
+
+function filtered() {
+    var form = $("#filterForm");
+    var actionUrl = form.attr('action');
+    $.ajax({
+        type: "GET",
+        url: actionUrl,
+        data: form.serialize(),
+    });
+}
+
+function cancelFilter() {
+    var form = $("#filterForm");
+    var actionUrl = form.attr('action');
+    $.ajax({
+        type: "GET",
+        url: actionUrl,
+    });
+}
