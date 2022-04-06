@@ -53,20 +53,13 @@ function saveMeal() {
 }
 
 function filtered() {
-    var form = $("#filterForm");
-    var actionUrl = form.attr('action');
+    const form = $("#mealFilterForm");
     $.ajax({
         type: "GET",
-        url: actionUrl,
+        url: 'ui/meals/filter/',
         data: form.serialize(),
-    });
-}
-
-function cancelFilter() {
-    var form = $("#filterForm");
-    var actionUrl = form.attr('action');
-    $.ajax({
-        type: "GET",
-        url: actionUrl,
+    }).done(function (data) {
+        ctx.datatableApi.clear().rows.add(data).draw();
+        successNoty("Filtered");
     });
 }
