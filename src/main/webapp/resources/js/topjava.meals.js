@@ -61,11 +61,7 @@ $(function () {
                 ]
             ],
             "createdRow": function (row, data, dataIndex) {
-                if (data.excess.toString().includes('true')) {
-                    $(row).attr("data-meal-excess", true);
-                } else {
-                    $(row).attr("data-meal-excess", false);
-                }
+                $(row).attr("data-meal-excess", data.excess.toString().includes('true'));
             }
         })
     );

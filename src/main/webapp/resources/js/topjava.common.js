@@ -50,6 +50,9 @@ function save() {
     if (ctx.ajaxUrl.toString() === 'profile/meals/') {
         const jsonSaveMealForm = form.serializeArray();
         jsonSaveMealForm[1].value = jsonSaveMealForm[1].value.replace(' ', 'T');
+        if (jsonSaveMealForm[3].value === "") {
+            jsonSaveMealForm[3].value = '0';
+        }
         serializeForm = jsonSaveMealForm;
     } else {
         serializeForm = form.serialize()
