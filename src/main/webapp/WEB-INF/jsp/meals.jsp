@@ -7,6 +7,10 @@
 <body>
 <script type="text/javascript" src="resources/js/topjava.common.js" defer></script>
 <script type="text/javascript" src="resources/js/topjava.meals.js" defer></script>
+<link rel="stylesheet" type="text/css" href="resources/css/jquery.datetimepicker.css"/>
+<script src="resources/js/jquery.js"></script>
+<script src="resources/js/jquery.datetimepicker.js"></script>
+<script src="resources/js/jquery.datetimepicker.full.min.js"></script>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
 <div class="jumbotron pt-4">
@@ -78,9 +82,14 @@
                     <input type="hidden" id="id" name="id">
 
                     <div class="form-group">
-                        <label for="dateTime" class="col-form-label"><spring:message code="meal.dateTime"/></label>
-                        <input type="datetime-local" class="form-control" id="dateTime" name="dateTime"
-                               placeholder="<spring:message code="meal.dateTime"/>">
+                        <label for="datetimepicker" class="col-form-label"><spring:message code="meal.dateTime"/></label><br>
+                        <input type="text" id="datetimepicker" name="dateTime"/>
+                        <script>
+                            jQuery('#datetimepicker').datetimepicker({
+                                defaultDate: new Date(),
+                                format: 'Y-m-d H:i'
+                            });
+                        </script>
                     </div>
 
                     <div class="form-group">

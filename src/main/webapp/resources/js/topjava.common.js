@@ -46,10 +46,18 @@ function updateTableByData(data) {
 }
 
 function save() {
+    let serializeForm;
+    if (ctx.ajaxUrl.toString() === 'profile/meals/') {
+        const jsonSaveMealForm = form.serializeArray();
+        jsonSaveMealForm[1].value = jsonSaveMealForm[1].value.replace(' ', 'T');
+        serializeForm = jsonSaveMealForm;
+    } else {
+        serializeForm = form.serialize()
+    }
     $.ajax({
         type: "POST",
         url: ctx.ajaxUrl,
-        data: form.serialize()
+        data: serializeForm
     }).done(function () {
         $("#editRow").modal("hide");
         ctx.updateTable();
