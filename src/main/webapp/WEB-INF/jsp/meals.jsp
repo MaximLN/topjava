@@ -22,20 +22,48 @@
                 <form id="filter">
                     <div class="row">
                         <div class="col-3">
-                            <label for="startDate"><spring:message code="meal.startDate"/></label>
-                            <input class="form-control" type="date" name="startDate" id="startDate">
+                            <label for="datetimepickerStartDate"><spring:message code="meal.startDate"/></label><br>
+                            <input type="text" id="datetimepickerStartDate" name="startDate"/>
+                            <script>
+                                jQuery('#datetimepickerStartDate').datetimepicker({
+                                    timepicker:false,
+                                    defaultDate: new Date(),
+                                    format: 'Y-m-d'
+                                });
+                            </script>
                         </div>
                         <div class="col-3">
-                            <label for="endDate"><spring:message code="meal.endDate"/></label>
-                            <input class="form-control" type="date" name="endDate" id="endDate">
+                            <label for="datetimepickerEndDate"><spring:message code="meal.endDate"/></label><br>
+                            <input type="text" id="datetimepickerEndDate" name="endDate"/>
+                            <script>
+                                jQuery('#datetimepickerEndDate').datetimepicker({
+                                    timepicker:false,
+                                    defaultDate: new Date(),
+                                    format: 'Y-m-d'
+                                });
+                            </script>
                         </div>
                         <div class="offset-2 col-2">
-                            <label for="startTime"><spring:message code="meal.startTime"/></label>
-                            <input class="form-control" type="time" name="startTime" id="startTime">
+                            <label for="datetimepickerStartTime"><spring:message code="meal.startTime"/></label><br>
+                            <input type="text" id="datetimepickerStartTime" name="startTime"/>
+                            <script>
+                                jQuery('#datetimepickerStartTime').datetimepicker({
+                                    datepicker:false,
+                                    defaultDate: new Date(),
+                                    format: 'H:i'
+                                });
+                            </script>
                         </div>
                         <div class="col-2">
-                            <label for="endTime"><spring:message code="meal.endTime"/></label>
-                            <input class="form-control" type="time" name="endTime" id="endTime">
+                            <label for="datetimepickerEndTime"><spring:message code="meal.endTime"/></label><br>
+                            <input type="text" id="datetimepickerEndTime" name="endTime"/>
+                            <script>
+                                jQuery('#datetimepickerEndTime').datetimepicker({
+                                    datepicker:false,
+                                    defaultDate: new Date(),
+                                    format: 'H:i'
+                                });
+                            </script>
                         </div>
                     </div>
                 </form>
