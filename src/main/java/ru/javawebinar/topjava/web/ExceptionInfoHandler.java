@@ -19,6 +19,7 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Objects;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -37,6 +38,12 @@ public class ExceptionInfoHandler {
     @ResponseStatus(HttpStatus.CONFLICT)  // 409
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ErrorInfo conflict(HttpServletRequest req, DataIntegrityViolationException e) {
+        if (Objects.requireNonNull(e.getMessage()).contains("constraint [meals_unique_user_datetime_idx]")) {
+            return logAndGetErrorInfo(req, new DataIntegrityViolationException("You already have food for this time"), true, DATA_ERROR);
+        }
+        if (Objects.requireNonNull(e.getMessage()).contains("constraint [users_unique_email_idx]")) {
+            return logAndGetErrorInfo(req, new DataIntegrityViolationException("User with this email already exists"), true, DATA_ERROR);
+        }
         return logAndGetErrorInfo(req, e, true, DATA_ERROR);
     }
 
