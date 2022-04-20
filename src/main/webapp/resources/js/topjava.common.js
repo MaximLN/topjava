@@ -107,9 +107,14 @@ function renderDeleteBtn(data, type, row) {
 
 function failNoty(jqXHR) {
     closeNoty();
-    var errorInfo = jqXHR.responseJSON;
+    var errorText = jqXHR.responseJSON.detail;
+    if (errorText.includes('users_unique_email_idx')){
+        errorText=i18n['userDuplicate'];
+    }else if (errorText.includes('meals_unique_user_datetime_idx')){
+        errorText=i18n['mealDuplicate'];
+    } else {errorText = errorText.split(':')[1];}
     failedNote = new Noty({
-        text: errorInfo.detail.split(':')[1],
+        text: errorText,
         type: "error",
         layout: "bottomRight"
     });
