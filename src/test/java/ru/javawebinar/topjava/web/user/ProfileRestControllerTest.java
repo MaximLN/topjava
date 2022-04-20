@@ -65,6 +65,16 @@ class ProfileRestControllerTest extends AbstractControllerTest {
     }
 
     @Test
+    void registerNotValid() throws Exception {
+        UserTo newTo = new UserTo(null, "newName", "newemail@ya.ru", "X", 1500);
+        perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(newTo)))
+                .andDo(print())
+                .andExpect(status().isUnprocessableEntity());
+    }
+
+    @Test
     void update() throws Exception {
         UserTo updatedTo = new UserTo(null, "newName", "user@yandex.ru", "newPassword", 1500);
         perform(MockMvcRequestBuilders.put(REST_URL).contentType(MediaType.APPLICATION_JSON)
